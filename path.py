@@ -34,7 +34,7 @@ class Path:
         energy = 0
         for i, reaction in enumerate(self):
             energy += reaction.energy
-            xs += [i + 0.5, i + 1.5]
+            xs += [i + 0.6, i + 1.4]
             ys += [energy, energy]
 
         ax.plot(xs, ys, label=self.name)
