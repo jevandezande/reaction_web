@@ -22,6 +22,16 @@ class Path:
         """
         return len(self.reactions)
 
+    def __repr__(self):
+        reactions = ''
+        return f'<Path {self.name}>'
+
+    def __str__(self):
+        """
+        String of the reactions
+        """
+        return '\n'.join(f'{reaction}' for reaction in self)
+
     def __iter__(self):
         """
         Iterate over reactions

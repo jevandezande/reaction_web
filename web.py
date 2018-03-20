@@ -18,8 +18,18 @@ class Web:
         self.paths = paths
 
     def __iter__(self):
+        """
+        Iterate over all reaction paths
+        """
         for path in self.paths:
             yield path
+
+    def __repr__(self):
+        paths = ", ".join(path.name for path in self)
+        return f'<Web [{paths}]>'
+
+    def __str__(self):
+        return '\n\n'.join(f'{path.name}:\n{path}' for path in self)
 
     def plot(self, style='stacked'):
         """
