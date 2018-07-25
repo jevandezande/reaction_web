@@ -1,8 +1,8 @@
 import numpy as np
 
-from path import Path
-from molecule import Molecule
-from reaction import EReaction, Reaction
+from .path import Path
+from .molecule import Molecule
+from .reaction import EReaction, Reaction
 
 import more_itertools as mit
 import matplotlib.pyplot as plt

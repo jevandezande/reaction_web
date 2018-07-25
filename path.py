@@ -1,7 +1,7 @@
 import numpy as np
 
-from molecule import Molecule
-from reaction import EReaction, Reaction
+from .molecule import Molecule
+from .reaction import EReaction, Reaction
 
 import matplotlib.pyplot as plt
 
