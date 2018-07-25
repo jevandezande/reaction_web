@@ -15,6 +15,8 @@ class Web:
         :param paths: a list of paths
         """
         assert isinstance(paths, list)
+        for path in paths:
+            assert isinstance(path, Path)
         self.paths = paths
 
     def __iter__(self):
