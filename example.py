@@ -5,7 +5,6 @@ from reaction_web.reaction import EReaction, Reaction
 
 import matplotlib.pyplot as plt
 
-
 proton = Molecule('H+', 1, 1)
 hydrogen_atom = Molecule('H', 0, 2)
 hydrogen_molecule = Molecule('H2', -1, 1)
@@ -46,6 +45,6 @@ plt.show()
 # Both reactions on same plot
 web = Web([p1, p2])
 print(web)
-web.plot()
-plt.legend(['Water production', 'Hydrogen production from proton'])
+fig, axes = web.plot()
+axes.legend(['Water production', 'Hydrogen production from proton'])
 plt.show()

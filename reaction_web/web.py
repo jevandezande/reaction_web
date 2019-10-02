@@ -41,17 +41,22 @@ class Web:
             subplots: each path in its own subplot
         """
         if style == 'stacked':
+            fig, axes = plt.subplots()
             for path in self:
-                path.plot()
+                fig, axes = path.plot(plot=(fig, axes))
+            return fig, axes
+
         elif style == 'subplots':
             height = int(np.sqrt(len(self.paths)))
             width = height + 1 if height**2 < len(self.paths) else height
 
-            f, axes = plt.subplots(height, width, sharex=True, sharey=True)
+            fig, axes = plt.subplots(height, width, sharex=True, sharey=True)
             axes_iter = mit.collapse(axes)
             max_len = 0
             for i, (path, ax) in enumerate(zip(self, axes_iter)):
-                path.plot(ax=ax)
+                path.plot(plot=(fig, ax))
                 max_len = max(max_len, len(path))
-            plt.xticks(np.arange(max_len + 1))
-            plt.xlabel('Species')
+            ax.set_xticks(np.arange(max_len + 1))
+            ax.set_xlabel('Species')
+
+            return fig, axes

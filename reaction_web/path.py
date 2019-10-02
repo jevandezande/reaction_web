@@ -46,12 +46,19 @@ class Path:
         """
         return np.array(list(map(lambda r: r.energy, self)))
 
-    def plot(self, ax=plt):
+    def plot(self, plot=None):
         """
         Plot of the reaction path
         :param ax: where to plot
             e.g. using default canvas (plt) or a subplot (the given axis)
         """
+        if plot is None:
+            fig, ax = plt.subplots()
+            ax.set_xticks(np.arange(len(self) + 1))
+            ax.set_xlabel('Species')
+        else:
+            fig, ax = plot
+
         xs, ys = [-0.4, 0.4], [0, 0]
 
         for i, energy in enumerate(np.cumsum(self.energies)):
@@ -60,6 +67,4 @@ class Path:
 
         ax.plot(xs, ys, label=self.name)
 
-        if ax == plt:
-            plt.xticks(np.arange(len(self) + 1))
-            plt.xlabel('Species')
+        return fig, ax

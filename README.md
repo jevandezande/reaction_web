@@ -6,7 +6,9 @@ set of conversions from one set of molecules to another set of molecules. This
 module allows for the simple plotting of reaction webs of chemical and
 electrochemical reactions.
 
-See example.py for usage.
+![Example image of water vs H2 production](media/Water_vs_H2.svg)
+
+See ![example.py](example.py) for usage.
 
 Contributions
 =============
