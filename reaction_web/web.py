@@ -1,11 +1,12 @@
+import itertools
 import numpy as np
+
+import more_itertools as mit
+import matplotlib.pyplot as plt
 
 from .path import Path
 from .molecule import Molecule
 from .reaction import EReaction, Reaction
-
-import more_itertools as mit
-import matplotlib.pyplot as plt
 
 
 class Web:
@@ -41,28 +42,32 @@ class Web:
 
     def plot(self, style='stacked'):
         """
-        Plot the reaction paths
+        Plot the reaction paths.
+
         :param style: style of plots:
             stacked: all paths on the same plot
             subplots: each path in its own subplot
         """
         if style == 'stacked':
             fig, axes = plt.subplots()
-            for path in self:
-                fig, axes = path.plot(plot=(fig, axes))
-            return fig, axes
+            axes_flat = [axes]*len(self)
 
         elif style == 'subplots':
             height = int(np.sqrt(len(self.paths)))
             width = height + 1 if height**2 < len(self.paths) else height
 
             fig, axes = plt.subplots(height, width, sharex=True, sharey=True)
-            axes_iter = mit.collapse(axes)
-            max_len = 0
-            for i, (path, ax) in enumerate(zip(self, axes_iter)):
-                path.plot(plot=(fig, ax))
-                max_len = max(max_len, len(path))
-            ax.set_xticks(np.arange(max_len + 1))
+            fig.subplots_adjust(hspace=0, wspace=0)
+            axes_flat = list(mit.collapse(axes))
+
+        max_len = max([len(path) for path in self])
+        axes_flat[0].set_xticks(np.arange(max_len + 1))
+        axes_flat[0].set_ylabel('Energy')
+
+        max_len = 0
+        for path, ax in zip(self, axes_flat):
+            path.plot(plot=(fig, ax))
+            ax.legend()
             ax.set_xlabel('Species')
 
-            return fig, axes
+        return fig, axes

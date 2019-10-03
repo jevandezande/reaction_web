@@ -54,6 +54,7 @@ class Path:
         """
         if plot is None:
             fig, ax = plt.subplots()
+            ax.set_ylabel('Energy')
             ax.set_xticks(np.arange(len(self) + 1))
             ax.set_xlabel('Species')
         else:
