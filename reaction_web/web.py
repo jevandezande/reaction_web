@@ -26,6 +26,12 @@ class Web:
         for path in self.paths:
             yield path
 
+    def __len__(self):
+        """
+        Number of paths in the Web.
+        """
+        return len(self.paths)
+
     def __repr__(self):
         paths = ", ".join(path.name for path in self)
         return f'<Web [{paths}]>'
