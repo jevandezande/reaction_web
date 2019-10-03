@@ -1,12 +1,12 @@
 import itertools
 import numpy as np
 
-import more_itertools as mit
-import matplotlib.pyplot as plt
-
 from .path import Path
 from .molecule import Molecule
 from .reaction import EReaction, Reaction
+
+import more_itertools as mit
+import matplotlib.pyplot as plt
 
 
 class Web:
