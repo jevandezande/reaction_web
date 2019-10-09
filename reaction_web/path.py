@@ -46,7 +46,7 @@ class Path:
         """
         return np.array(list(map(lambda r: r.energy, self)))
 
-    def plot(self, plot=None):
+    def plot(self, plot=None, spread=True):
         """
         Plot of the reaction path
         :param ax: where to plot
@@ -60,10 +60,17 @@ class Path:
         else:
             fig, ax = plot
 
-        xs, ys = [-0.4, 0.4], [0, 0]
+        if not spread:
+            spread_width = 0
+        elif spread is True:
+            spread_width = 0.1
+        else:
+            spread_width = spread
+
+        xs, ys = [-0.5 + spread_width, 0.5 - spread_width], [0, 0]
 
         for i, energy in enumerate(np.cumsum(self.energies)):
-            xs += [i + 0.6, i + 1.4]
+            xs += [i + 0.5 + spread_width, i + 1.5 - spread_width]
             ys += [energy, energy]
 
         ax.plot(xs, ys, label=self.name)

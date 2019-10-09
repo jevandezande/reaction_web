@@ -40,7 +40,7 @@ class Web:
     def __str__(self):
         return '\n\n'.join(f'{path.name}:\n{path}' for path in self)
 
-    def plot(self, style='stacked'):
+    def plot(self, style='stacked', spread=True):
         """
         Plot the reaction paths.
 
@@ -66,7 +66,7 @@ class Web:
 
         max_len = 0
         for path, ax in zip(self, axes_flat):
-            path.plot(plot=(fig, ax))
+            path.plot(plot=(fig, ax), spread=spread)
             ax.legend()
             ax.set_xlabel('Species')
 
