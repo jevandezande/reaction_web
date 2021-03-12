@@ -24,8 +24,7 @@ class Web:
         """
         Iterate over all reaction paths
         """
-        for path in self.paths:
-            yield path
+        yield from self.paths
 
     def __len__(self):
         """

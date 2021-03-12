@@ -36,15 +36,14 @@ class Path:
         """
         Iterate over reactions
         """
-        for reaction in self.reactions:
-            yield reaction
+        yield from self.reactions
 
     @property
     def energies(self):
         """
         An array of the energies of the reactions
         """
-        return np.array(list(map(lambda r: r.energy, self)))
+        return np.fromiter(map(lambda r: r.energy, self), dtype=float)
 
     def plot(self, plot=None, spread=True):
         """
