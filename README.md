@@ -8,7 +8,7 @@ electrochemical reactions.
 
 ![Example image of water vs H2 production](media/Water_vs_H2.svg)
 
-See ![example.py](example.py) for usage.
+See [example.py](example.py) for usage.
 
 Contributions
 =============
