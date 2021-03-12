@@ -1,13 +1,20 @@
-import numpy as np
+from __future__ import annotations
 
-from .molecule import Molecule
-from .reaction import EReaction, Reaction
+from collections.abc import Generator, Iterable, Sequence
 
 import matplotlib.pyplot as plt
+import numpy as np
+
+from .reaction import Reaction
 
 
 class Path:
-    def __init__(self, reactions, name='', step_sizes = None):
+    def __init__(
+        self,
+        reactions: Sequence[Reaction],
+        name: str = "",
+        step_sizes: Iterable[float] = None,
+    ):
         """
         Series of reactions forming a reaction path
         :param reactions: list of reactions in order
@@ -25,29 +32,28 @@ class Path:
         return len(self.reactions)
 
     def __repr__(self):
-        reactions = ''
-        return f'<Path {self.name}>'
+        return f"<Path {self.name}>"
 
     def __str__(self):
         """
         String of the reactions
         """
-        return '\n'.join(f'{reaction}' for reaction in self)
+        return "\n".join(f"{reaction}" for reaction in self)
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[Reaction, None, None]:
         """
         Iterate over reactions
         """
         yield from self.reactions
 
     @property
-    def energies(self):
+    def energies(self) -> np.ndarray:
         """
         An array of the energies of the reactions
         """
         return np.fromiter(map(lambda r: r.energy, self), dtype=float)
 
-    def plot(self, plot=None, spread=True):
+    def plot(self, plot: tuple = None, spread: float | bool = True) -> tuple:
         """
         Plot of the reaction path
         :param ax: where to plot
@@ -55,14 +61,14 @@ class Path:
         """
         if plot is None:
             fig, ax = plt.subplots()
-            ax.set_ylabel('Energy')
+            ax.set_ylabel("Energy")
             ax.set_xticks(np.arange(len(self) + 1))
-            ax.set_xlabel('Species')
+            ax.set_xlabel("Species")
         else:
             fig, ax = plot
 
         if not spread:
-            spread_width = 0
+            spread_width: float = 0
         elif spread is True:
             spread_width = 0.1
         else:
@@ -70,12 +76,12 @@ class Path:
 
         length = len(self) + 1
 
-        xs = np.repeat(np.arange(length), 2) + [-0.5 + spread_width, 0.5 - spread_width]*length
+        xs = np.repeat(np.arange(length), 2) + [-0.5 + spread_width, 0.5 - spread_width] * length
         xs[2:] += np.repeat(np.cumsum(self.steps), 2)
 
         # swap if going backwards
-        for i in np.where(self.steps < 0)[0]*2 + 2:
-            xs[[i+1, i]] = xs[[i, i + 1]]
+        for i in np.where(self.steps < 0)[0] * 2 + 2:
+            xs[[i + 1, i]] = xs[[i, i + 1]]
 
         ys = np.append([0, 0], np.repeat(np.cumsum(self.energies), 2))
 

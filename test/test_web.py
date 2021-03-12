@@ -1,63 +1,55 @@
-#!/usr/bin/env python3
-import os
+from pytest import approx, raises
 
-from .web import Web
-from .path import Path
-from .molecule import Molecule
-from .reaction import EReaction, Reaction
-
-import pytest
-
-from pytest import approx
+from reaction_web import EReaction, Molecule, Path, Reaction, Web
 
 
 class TestMolecule:
     def test(self):
-        a = Molecule('a', -1)
-        assert a.name == 'a'
+        a = Molecule("a", -1)
+        assert a.name == "a"
         assert a.energy == -1
-        assert str(a) == '<a -1.0000>'
+        assert str(a) == "<a -1.0000>"
 
 
 class TestReaction:
     def test(self):
-        a = Molecule('a', -1)
-        b = Molecule('b', -2)
+        a = Molecule("a", -1)
+        b = Molecule("b", -2)
         r = Reaction([a], [b])
 
         assert r.reactants == [a]
         assert r.products == [b]
         assert r.energy == -1
-        assert str(r) == 'a -> b'
+        assert str(r) == "a -> b"
 
-        with pytest.raises(AssertionError):
+        with raises(AssertionError):
             assert Reaction(a, b)
 
 
 class TestEReaction(TestReaction):
     def test(self):
-        a = Molecule('a', -1)
-        b = Molecule('b', -2)
+        a = Molecule("a", -1)
+        b = Molecule("b", -2)
         r = EReaction([a], [b], ne=1, ref_pot=1)
 
         assert r.reactants == [a]
         assert r.products == [b]
         assert r.energy == -2
-        assert str(r) == 'a -> b + !1.00!'
+        assert str(r) == "a -> b + !1.00!"
 
-        with pytest.raises(AssertionError):
+        with raises(AssertionError):
             assert Reaction(a, b)
 
 
 class TestPath:
     def test(self):
         refp = 5
-        a = Molecule('a', 1)
-        b = Molecule('b', 0)
-        c = Molecule('c', 2)
-        d = Molecule('d', -1)
-        e = Molecule('e', 3)
-        f = Molecule('f', 0.5)
+        a = Molecule("a", 1)
+        b = Molecule("b", 0)
+        c = Molecule("c", 2)
+        d = Molecule("d", -1)
+        e = Molecule("e", 3)
+        f = Molecule("f", 0.5)
         r1 = Reaction([a], [b])
         r2 = Reaction([b], [c])
         r3 = Reaction([c], [d, e])
@@ -75,12 +67,12 @@ class TestPath:
 class TestWeb:
     def test(self):
         refp = 5
-        a = Molecule('a', 1)
-        b = Molecule('b', 0)
-        c = Molecule('c', 2)
-        d = Molecule('d', -1)
-        e = Molecule('e', 3)
-        f = Molecule('f', 0.5)
+        a = Molecule("a", 1)
+        b = Molecule("b", 0)
+        c = Molecule("c", 2)
+        d = Molecule("d", -1)
+        e = Molecule("e", 3)
+        f = Molecule("f", 0.5)
         r1 = Reaction([a], [b])
         r2 = Reaction([b], [c])
         r3 = Reaction([c], [d, e])
@@ -89,6 +81,6 @@ class TestWeb:
         path2 = Path([r2, r3, r4])
         path3 = Path([r2, r3, r4], step_sizes=[2, -1, 3])
 
-        web = Web([path1, path2])
-        web.plot(style='subplots')
-        web.plot(style='stacked')
+        web = Web([path1, path2, path3])
+        web.plot(style="subplots")
+        web.plot(style="stacked")
