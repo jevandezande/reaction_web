@@ -87,6 +87,7 @@ class TestWeb:
         r4 = EReaction([e], [f], ne=1, ref_pot=refp)
         path1 = Path([r1, r2, r3, r4])
         path2 = Path([r2, r3, r4])
+        path3 = Path([r2, r3, r4], step_sizes=[2, -1, 3])
 
         web = Web([path1, path2])
         web.plot(style='subplots')

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 class Path:
-    def __init__(self, reactions, name=''):
+    def __init__(self, reactions, name='', step_sizes = None):
         """
         Series of reactions forming a reaction path
         :param reactions: list of reactions in order
@@ -15,6 +15,8 @@ class Path:
         """
         self.reactions = reactions
         self.name = name
+        self.steps = np.zeros(len(reactions)) if step_sizes is None else np.array(step_sizes) - 1
+        assert len(self.steps) == len(reactions)
 
     def __len__(self):
         """
@@ -66,11 +68,16 @@ class Path:
         else:
             spread_width = spread
 
-        xs, ys = [-0.5 + spread_width, 0.5 - spread_width], [0, 0]
+        length = len(self) + 1
 
-        for i, energy in enumerate(np.cumsum(self.energies)):
-            xs += [i + 0.5 + spread_width, i + 1.5 - spread_width]
-            ys += [energy, energy]
+        xs = np.repeat(np.arange(length), 2) + [-0.5 + spread_width, 0.5 - spread_width]*length
+        xs[2:] += np.repeat(np.cumsum(self.steps), 2)
+
+        # swap if going backwards
+        for i in np.where(self.steps < 0)[0]*2 + 2:
+            xs[[i+1, i]] = xs[[i, i + 1]]
+
+        ys = np.append([0, 0], np.repeat(np.cumsum(self.energies), 2))
 
         ax.plot(xs, ys, label=self.name)
 
