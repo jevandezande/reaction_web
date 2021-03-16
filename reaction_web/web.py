@@ -56,7 +56,7 @@ class Web:
             fig.subplots_adjust(hspace=0, wspace=0)
             axes_flat = list(mit.collapse(axes))
 
-        max_len = max([len(path) for path in self])
+        max_len = max(len(path) for path in self)
         axes_flat[0].set_xticks(np.arange(max_len + 1))
         axes_flat[0].set_ylabel("Energy")
 
