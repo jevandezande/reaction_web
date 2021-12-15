@@ -1,5 +1,3 @@
-from pytest import raises
-
 from reaction_web import EReaction, Molecule, Reaction
 
 
@@ -13,9 +11,6 @@ def test_Reaction():
     assert r.energy == -1
     assert str(r) == "a -> b"
 
-    with raises(AssertionError):
-        assert Reaction(a, b)
-
 
 def test_EReaction():
     a = Molecule("a", -1)
@@ -26,6 +21,3 @@ def test_EReaction():
     assert r.products == [b]
     assert r.energy == -2
     assert str(r) == "a -> b + !1.00!"
-
-    with raises(AssertionError):
-        assert EReaction(a, b, 9.0, -4.4)

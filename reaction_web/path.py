@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from collections.abc import Generator, Iterable, Sequence
+from dataclasses import dataclass, field
+from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,22 +10,21 @@ import numpy as np
 from .reaction import Reaction
 
 
+@dataclass
 class Path:
-    def __init__(
-        self,
-        reactions: Sequence[Reaction],
-        name: str = "",
-        step_sizes: Iterable[float] = None,
-    ):
-        """
-        Series of reactions forming a reaction path
-        :param reactions: list of reactions in order
-        :param name: name of the reaction path
-        """
-        self.reactions = reactions
-        self.name = name
-        self.steps = np.zeros(len(reactions)) if step_sizes is None else np.array(step_sizes) - 1
-        assert len(self.steps) == len(reactions)
+    """
+    Series of reactions forming a reaction path
+    """
+
+    reactions: Sequence[Reaction]
+    name: str = ""
+    step_sizes: Optional[Iterable[float]] = None
+    steps: np.ndarray = field(init=False)
+
+    def __post_init__(self):
+        step_sizes = self.step_sizes
+        self.steps = np.zeros(len(self)) if step_sizes is None else np.array(step_sizes) - 1
+        assert len(self.steps) == len(self.reactions)
 
     def __len__(self):
         """
@@ -53,7 +54,7 @@ class Path:
         """
         return np.fromiter(map(lambda r: r.energy, self), dtype=float)
 
-    def plot(self, plot: tuple = None, spread: float | bool = True) -> tuple:
+    def plot(self, plot: Optional[tuple] = None, spread: float | bool = True) -> tuple:
         """
         Plot of the reaction path
         :param ax: where to plot
@@ -67,12 +68,7 @@ class Path:
         else:
             fig, ax = plot
 
-        if not spread:
-            spread_width: float = 0
-        elif spread is True:
-            spread_width = 0.1
-        else:
-            spread_width = spread
+        spread_width = 0.1 if spread is True else float(spread)
 
         length = len(self) + 1
 

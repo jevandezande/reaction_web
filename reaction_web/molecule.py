@@ -1,14 +1,16 @@
+from dataclasses import dataclass
+from typing import Optional
+
+
+@dataclass
 class Molecule:
-    def __init__(self, name: str, energy: float, multiplicity: int = None):
-        """
-        A molecule, atom, or group of these that have a defined energy
-        """
-        self.name = name
-        self.energy = energy
-        self.multiplicity = multiplicity
+    """
+    A molecule, atom, or group of these that have a defined energy
+    """
+
+    name: str
+    energy: float
+    multiplicity: Optional[int] = None
 
     def __repr__(self):
         return f"<{self.name} {self.energy:7.4f}>"
-
-    def __str__(self):
-        return self.__repr__()

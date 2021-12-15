@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Generator, Literal, Sequence
 
 import matplotlib.pyplot as plt
@@ -9,13 +10,13 @@ import numpy as np
 from .path import Path
 
 
+@dataclass
 class Web:
-    def __init__(self, paths: Sequence[Path]):
-        """
-        A collection of reaction paths
-        :param paths: Paths
-        """
-        self.paths = paths
+    """
+    A collection of reaction paths
+    """
+
+    paths: Sequence[Path]
 
     def __iter__(self) -> Generator[Path, None, None]:
         """
@@ -30,8 +31,7 @@ class Web:
         return len(self.paths)
 
     def __repr__(self):
-        paths = ", ".join(path.name for path in self)
-        return f"<Web [{paths}]>"
+        return f"<Web [{', '.join(path.name for path in self)}]>"
 
     def __str__(self):
         return "\n\n".join(f"{path.name}:\n{path}" for path in self)
