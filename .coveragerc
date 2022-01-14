@@ -1,5 +1,6 @@
 [run]
 source = reaction_web
+omit = reaction_web/__main__.py
 
 [report]
 exclude_lines =

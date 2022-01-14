@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Generator, Literal, Sequence
 
@@ -60,7 +58,6 @@ class Web:
         axes_flat[0].set_xticks(np.arange(max_len + 1))
         axes_flat[0].set_ylabel("Energy")
 
-        max_len = 0
         for path, ax in zip(self, axes_flat):
             path.plot(plot=(fig, ax), spread=spread)
             ax.legend()
