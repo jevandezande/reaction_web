@@ -3,25 +3,25 @@ import matplotlib.pyplot as plt
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
 
 proton = Molecule("H+", 1, 1)
-hydrogen_atom = Molecule("H", 0, 2)
-hydrogen_molecule = Molecule("H2", -1, 1)
-oxygen_atom = Molecule("O", 0, 3)
-water = Molecule("H2O", -2, 1)
+H = Molecule("H", 0, 2)
+H2 = Molecule("H2", -1, 1)
+O = Molecule("O", 0, 3)
+H2O = Molecule("H2O", -2, 1)
 
 print(
     f"""\
 Proton        : {proton}
-Hydrogen atom : {hydrogen_atom}
-Hydrogen mol  : {hydrogen_molecule}
+Hydrogen atom : {H}
+Hydrogen mol  : {H2}
 """
 )
 
 # H+ + e- -> H (potential of -1.5)
-r1 = EReaction([proton], [hydrogen_atom], ne=1, ref_pot=-1.5)
+r1 = EReaction([proton], [H], ne=1, ref_pot=-1.5)
 # H + H -> H2
-r2 = Reaction([hydrogen_atom] * 2, [hydrogen_molecule])
+r2 = Reaction([H] * 2, [H2])
 # H2 + O -> H2O
-r3 = Reaction([hydrogen_molecule, oxygen_atom], [water])
+r3 = Reaction([H2, O], [H2O])
 print(
     f"""\
 Reaction 1: {r1}
@@ -42,6 +42,7 @@ Energies: {p1.energies}
 """
 )
 p1.plot()
+plt.legend()
 plt.show()
 
 # H+ + e- -> H
@@ -55,6 +56,7 @@ Energies: {p2.energies}
 """
 )
 p2.plot()
+plt.legend()
 plt.show()
 
 # Both reactions on same plot

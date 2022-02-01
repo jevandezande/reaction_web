@@ -5,6 +5,7 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 
+from .chem_translate import translate
 from .reaction import Reaction
 
 
@@ -52,7 +53,7 @@ class Path:
         """
         return np.fromiter(map(lambda r: r.energy, self), dtype=float)
 
-    def plot(self, plot: Optional[tuple] = None, spread: float | bool = True) -> tuple:
+    def plot(self, plot: Optional[tuple] = None, spread: float | bool = True, latexify: bool = True) -> tuple:
         """
         Plot of the reaction path
         :param ax: where to plot
@@ -79,6 +80,7 @@ class Path:
 
         ys = np.append([0, 0], np.repeat(np.cumsum(self.energies), 2))
 
-        ax.plot(xs, ys, label=self.name)
+        label = translate(self.name) if latexify else self.name
+        ax.plot(xs, ys, label=label)
 
         return fig, ax
