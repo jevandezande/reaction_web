@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Generator, Literal, Sequence
+from typing import Generator, Literal, Optional, Sequence
 
 import matplotlib.pyplot as plt
 import more_itertools as mit
@@ -35,7 +35,11 @@ class Web:
         return "\n\n".join(f"{path.name}:\n{path}" for path in self)
 
     def plot(
-        self, style: Literal["stacked", "subplots"] = "stacked", spread: float | bool = True, latexify: bool = True
+        self,
+        title: Optional[str] = None,
+        style: Literal["stacked", "subplots"] = "stacked",
+        spread: float | bool = True,
+        latexify: bool = True,
     ):
         """
         Plot the reaction paths.
@@ -64,5 +68,7 @@ class Web:
             path.plot(plot=(fig, ax), spread=spread, latexify=latexify)
             ax.legend()
             ax.set_xlabel("Species")
+
+        fig.suptitle(title)
 
         return fig, axes
