@@ -11,7 +11,7 @@ class Reaction:
     reactants: Sequence
     products: Sequence
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Reaction equation string
         """
