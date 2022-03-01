@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Generator, Literal, Optional, Sequence
+from typing import Iterator, Literal, Optional, Sequence
 
 import matplotlib.pyplot as plt
 import more_itertools as mit
@@ -16,7 +16,7 @@ class Web:
 
     paths: Sequence[Path]
 
-    def __iter__(self) -> Generator[Path, None, None]:
+    def __iter__(self) -> Iterator[Path]:
         """
         Iterate over all reaction paths
         """

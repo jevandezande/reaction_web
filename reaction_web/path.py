@@ -1,4 +1,4 @@
-from collections.abc import Generator, Iterable, Sequence
+from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -40,7 +40,7 @@ class Path:
         """
         return "\n".join(f"{reaction}" for reaction in self)
 
-    def __iter__(self) -> Generator[Reaction, None, None]:
+    def __iter__(self) -> Iterator[Reaction]:
         """
         Iterate over reactions
         """
