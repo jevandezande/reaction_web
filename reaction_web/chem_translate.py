@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 def get_num(string: str) -> str:
@@ -33,10 +33,6 @@ class Convertor(ABC):
     OPERATIONS = ["+", "=", ";", "->", "<-", "<>"]
 
     @classmethod
-    def mol_convertor(cls, string: str) -> str:
-        pass
-
-    @classmethod
     def convert(cls, string: str) -> str:
         out = []
 
@@ -49,14 +45,6 @@ class Convertor(ABC):
             out.append(cls.mol_convertor(chunk))
 
         return " ".join(out)
-
-
-class LatexConvertor(Convertor):
-    """
-    Converts a string to latex
-    >>> LatexConvertor.convert("H2O + NH3 -> OH- + NH4+")
-    'H$_2$O + NH$_3$ -> OH$^-$ + NH$_4^+$'
-    """
 
     @classmethod
     def mol_convertor(cls, string: str) -> str:
@@ -82,18 +70,69 @@ class LatexConvertor(Convertor):
             if (char := string[0]).isnumeric():
                 number = get_num(string)
                 increment = len(number)
-                out += f"$_{number}$"
+                out += cls.subscript_number(number)
             elif char == "^":
                 number = get_num(string[1:])
                 increment = len(number) + 2
                 charge = string[len(number) + 1]
                 assert charge in ["-", "+"]
-                out += f"$^{{{number}{charge}}}$"
+                out += cls.superscript_number_charge(number, charge)
             elif char in ["-", "+"]:
-                out += f"$^{char}$"
+                out += cls.superscript_number_charge("", char)
             else:
                 out += char
 
             string = string[increment:]
 
-        return out.replace("$$", "")
+        return cls.finalize(out)
+
+    @classmethod
+    @abstractmethod
+    def subscript_number(cls, number: str) -> str:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def superscript_number_charge(cls, number: str, charge: str) -> str:
+        pass
+
+    @classmethod
+    def finalize(cls, string: str) -> str:
+        return string
+
+
+class LatexConvertor(Convertor):
+    """
+    Converts a string to latex
+    >>> LatexConvertor.convert("H2O + NH3 -> OH- + NH4+")
+    'H$_2$O + NH$_3$ -> OH$^-$ + NH$_4^+$'
+    """
+
+    @classmethod
+    def finalize(cls, string: str) -> str:
+        """
+        Removes double dollar signs
+        >>> LatexConvertor.finalize("$123$$456$")
+        '$123456$'
+        """
+        return string.replace("$$", "")
+
+    @classmethod
+    def subscript_number(cls, number: str) -> str:
+        """
+        Converts a number to subscript
+        >>> LatexConvertor.subscript_number("123")
+        '$_123$'
+        """
+        return f"$_{number}$"
+
+    @classmethod
+    def superscript_number_charge(cls, number: str, charge: str) -> str:
+        """
+        Converts a number and charge to superscript
+        >>> LatexConvertor.superscript_number_charge("123", "-")
+        '$^{123-}$'
+        >>> LatexConvertor.superscript_number_charge("", "+")
+        '$^+$'
+        """
+        return f"$^{{{number}{charge}}}$" if number else f"$^{charge}$"
