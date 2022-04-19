@@ -12,7 +12,7 @@ matplotlib = "*"
 more-itertools = "*"
 
 [dev-packages]
-black = "==21.12b0"
+black = "==22.3"
 flake8 = "*"
 isort = "*"
 mypy = "*"
