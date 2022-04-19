@@ -1,3 +1,40 @@
+[project]
+authors = [ { name = "Jonathon Vandezande", email = "jevandezande@gmail.com" }, ]
+requires-python = ">=3.9"
+license = "MIT"
+license_file = "LICENSE"
+name = "Reaction Web"
+description = "Reaction path plotter"
+readme = "README.md"
+keywords = ["chemistry", "reaction", "plotting"]
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: MIT",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3.10",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+repository = "https://github.com/jevandezande/reaction_web"
+
+[project.scripts]
+
 [tool.black]
 line-length = 120
 target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.mypy]
+files = ["reaction_web", "tests"]
+ignore_missing_imports = true
+
+[tool.pytest]
+testpaths = ["tests"]
+addopts = "--doctest-modules"
+doctest_optionflags = "NORMALIZE_WHITESPACE"
