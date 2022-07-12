@@ -40,6 +40,7 @@ class Web:
         style: Literal["stacked", "subplots"] = "stacked",
         spread: float | bool = True,
         latexify: bool = True,
+        xtickslabels: Optional[list[str]] = None,
     ):
         """
         Plot the reaction paths.
@@ -68,6 +69,9 @@ class Web:
             path.plot(plot=(fig, ax), spread=spread, latexify=latexify)
             ax.legend()
             ax.set_xlabel("Species")
+
+        if xtickslabels:
+            ax.set_xticklabels(xtickslabels)
 
         fig.suptitle(title)
 

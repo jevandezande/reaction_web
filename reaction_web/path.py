@@ -53,7 +53,13 @@ class Path:
         """
         return np.fromiter(map(lambda r: r.energy, self), dtype=float)
 
-    def plot(self, plot: Optional[tuple] = None, spread: float | bool = True, latexify: bool = True) -> tuple:
+    def plot(
+        self,
+        plot: Optional[tuple] = None,
+        spread: float | bool = True,
+        latexify: bool = True,
+        xtickslabels: Optional[list[str]] = None,
+    ) -> tuple:
         """
         Plot of the reaction path
         :param ax: where to plot
@@ -82,5 +88,8 @@ class Path:
 
         label = translate(self.name) if latexify else self.name
         ax.plot(xs, ys, label=label)
+
+        if xtickslabels:
+            ax.set_xticklabels(xtickslabels)
 
         return fig, ax
