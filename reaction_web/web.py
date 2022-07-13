@@ -38,9 +38,10 @@ class Web:
         self,
         title: Optional[str] = None,
         style: Literal["stacked", "subplots"] = "stacked",
+        plot: Optional[tuple] = None,
         spread: float | bool = True,
-        latexify: bool = True,
         xtickslabels: Optional[list[str]] = None,
+        latexify: bool = True,
     ):
         """
         Plot the reaction paths.
@@ -48,18 +49,27 @@ class Web:
         :param style: style of plots:
             stacked: all paths on the same plot
             subplots: each path in its own subplot
+        :param plot: where to plot the Path
+            e.g. using default canvas (plt) or a subplot (the given axis)
+        :param spread: how much to spread the connecting lines
+        :param xtickslabels: labels for the xticks (replaces numbers)
+        :param latexify: convert names to latex
         """
-        if style == "stacked":
-            fig, axes = plt.subplots()
+        if not plot:
+            if style == "stacked":
+                fig, axes = plt.subplots()
+                axes_flat = [axes] * len(self)
+
+            elif style == "subplots":
+                height = int(np.sqrt(len(self)))
+                width = -(len(self) // -height)  # Ceiling integer division
+
+                fig, axes = plt.subplots(height, width, sharex=True, sharey=True)
+                fig.subplots_adjust(hspace=0, wspace=0)
+                axes_flat = list(mit.collapse(axes))
+        else:
+            fig, axes = plot
             axes_flat = [axes] * len(self)
-
-        elif style == "subplots":
-            height = int(np.sqrt(len(self)))
-            width = -(len(self) // -height)  # Ceiling integer division
-
-            fig, axes = plt.subplots(height, width, sharex=True, sharey=True)
-            fig.subplots_adjust(hspace=0, wspace=0)
-            axes_flat = list(mit.collapse(axes))
 
         max_len = max(len(path) for path in self)
         axes_flat[0].set_xticks(np.arange(max_len + 1))
@@ -73,6 +83,10 @@ class Web:
         if xtickslabels:
             ax.set_xticklabels(xtickslabels)
 
-        fig.suptitle(title)
+        if title:
+            if plot:
+                plot[1].set_title(title)
+            else:
+                fig.suptitle(title)
 
         return fig, axes

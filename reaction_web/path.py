@@ -57,15 +57,19 @@ class Path:
         self,
         plot: Optional[tuple] = None,
         spread: float | bool = True,
-        latexify: bool = True,
         xtickslabels: Optional[list[str]] = None,
+        latexify: bool = True,
     ) -> tuple:
         """
         Plot of the reaction path
-        :param ax: where to plot
+
+        :param plot: where to plot the Path
             e.g. using default canvas (plt) or a subplot (the given axis)
+        :param spread: how much to spread the connecting lines
+        :param xtickslabels: labels for the xticks (replaces numbers)
+        :param latexify: convert names to latex
         """
-        if plot is None:
+        if not plot:
             fig, ax = plt.subplots()
             ax.set_ylabel("Energy")
             ax.set_xticks(np.arange(len(self) + 1))
