@@ -1,25 +1,72 @@
-from pytest import approx
+from pytest import approx, fixture
 
 from reaction_web import EReaction, Molecule, Path, Reaction
 
 
-def test_Path():
+@fixture
+def path1():
     refp = 5
+
     a = Molecule("a", 1)
     b = Molecule("b", 0)
     c = Molecule("c", 2)
     d = Molecule("d", -1)
     e = Molecule("e", 3)
     f = Molecule("f", 0.5)
+
     r1 = Reaction([a], [b])
     r2 = Reaction([b], [c])
     r3 = Reaction([c], [d, e])
     r4 = EReaction([e], [f], ne=1, ref_pot=refp)
-    path1 = Path([r1, r2, r3, r4])
-    path2 = Path([r2, r3, r4], step_sizes=[2, -1, 3])
 
-    assert path1.reactions == [r1, r2, r3, r4]
-    assert path2.reactions == [r2, r3, r4]
+    return Path([r1, r2, r3, r4], "1")
 
+
+@fixture
+def path2():
+    refp = 5
+
+    b = Molecule("b", 0)
+    c = Molecule("c", 2)
+    d = Molecule("d", -1)
+    e = Molecule("e", 3)
+    f = Molecule("f", 0.5)
+
+    r2 = Reaction([b], [c])
+    r3 = Reaction([c], [d, e])
+    r4 = EReaction([e], [f], ne=1, ref_pot=refp)
+
+    return Path([r2, r3, r4], "2", step_sizes=[2, -1, 3])
+
+
+def test_len(path1, path2):
+    assert len(path1) == 4
+    assert len(path2) == 3
+
+
+def test_repr(path1, path2):
+    assert repr(path1) == "<Path 1>"
+    assert repr(path2) == "<Path 2>"
+
+
+def test_str(path1, path2):
+    assert (
+        str(path1)
+        == """\
+a -> b
+b -> c
+c -> d + e
+e -> f + !5.00!"""
+    )
+    assert (
+        str(path2)
+        == """\
+b -> c
+c -> d + e
+e -> f + !5.00!"""
+    )
+
+
+def test_energies(path1, path2):
     assert path1.energies == approx([-1, 2, 0, -7.5])
     assert path2.energies == approx([2, 0, -7.5])

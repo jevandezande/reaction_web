@@ -6,3 +6,4 @@ def test_init():
     assert a.name == "a"
     assert a.energy == -1
     assert str(a) == "<a -1.0000>"
+    assert repr(a) == "<a -1.0000>"
