@@ -33,7 +33,7 @@ def test_get_num(string, num):
     ],
 )
 def test_translate(string, latex_str, unicode_str):
-    assert translate(string, to="LaTeX") == latex_str
+    assert translate(string, to="latex") == latex_str
     assert translate(string, to="unicode") == unicode_str
 
 

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Literal
 
 
 def get_num(string: str) -> str:
@@ -22,8 +23,7 @@ def get_num(string: str) -> str:
     return string[:i]
 
 
-def translate(string: str, to: str = "latex") -> str:
-    to = to.lower()
+def translate(string: str, to: Literal["latex", "unicode"] = "latex") -> str:
     if to == "latex":
         return LatexConvertor.convert(string)
     elif to == "unicode":
