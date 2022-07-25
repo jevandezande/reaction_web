@@ -42,7 +42,7 @@ class EReaction(Reaction):
     ref_pot: float
     u: float = 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Reaction equation string with reference potential
         """

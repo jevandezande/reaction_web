@@ -25,16 +25,16 @@ class Path:
         self.steps = np.zeros(len(self)) if step_sizes is None else np.array(step_sizes) - 1
         assert len(self.steps) == len(self.reactions)
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         Number of reactions
         """
         return len(self.reactions)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Path {self.name}>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         String of the reactions
         """

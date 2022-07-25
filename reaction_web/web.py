@@ -22,16 +22,16 @@ class Web:
         """
         yield from self.paths
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         Number of paths in the Web
         """
         return len(self.paths)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Web [{', '.join(path.name for path in self)}]>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "\n\n".join(f"{path.name}:\n{path}" for path in self)
 
     def plot(
@@ -42,7 +42,7 @@ class Web:
         spread: float | bool = True,
         xtickslabels: Optional[list[str]] = None,
         latexify: bool = True,
-    ):
+    ) -> tuple:
         """
         Plot the reaction paths.
 
