@@ -1,6 +1,8 @@
+from matplotlib.pyplot import subplots
 from pytest import fixture
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
+from reaction_web.plot import plot_path, plot_web
 
 
 @fixture
@@ -23,36 +25,14 @@ def web():
     return Web([path1, path2, path3])
 
 
-def test_iter(web):
-    for path, p_original in zip(web, web.paths):
-        assert path == p_original
+def test_plot_path(web):
+    path1, path2, path3 = web
+    plot_path(path1, plot=subplots())
+    plot_path(path2, spread=False, xtickslabels=("R", "TS", "I", "P"))
+    plot_path(path3, latexify=False)
 
 
-def test_len(web):
-    assert len(web) == 3
-
-
-def test_repr(web):
-    assert repr(web) == "<Web [P1, P2, ]>"
-
-
-def test_str(web):
-    assert (
-        str(web)
-        == """\
-P1:
-a -> b
-b -> c
-c -> d + e
-e -> f + !5.00!
-
-P2:
-b -> c
-c -> d + e
-e -> f + !5.00!
-
-:
-b -> c
-c -> d + e
-e -> f + !5.00!"""
-    )
+def test_plot_web(web):
+    plot_web(web, plot=subplots())
+    plot_web(web, style="subplots")
+    plot_web(web, style="stacked")

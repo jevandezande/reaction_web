@@ -1,10 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Iterable, Iterator, Optional, Sequence
 
-import matplotlib.pyplot as plt
 import numpy as np
 
-from .chem_translate import translate
 from .reaction import Reaction
 
 
@@ -51,48 +49,3 @@ class Path:
         An array of the energies of the reactions
         """
         return np.fromiter(map(lambda r: r.energy, self), dtype=float)
-
-    def plot(
-        self,
-        plot: Optional[tuple] = None,
-        spread: float | bool = True,
-        xtickslabels: Optional[list[str]] = None,
-        latexify: bool = True,
-    ) -> tuple:
-        """
-        Plot of the reaction path
-
-        :param plot: where to plot the Path
-            e.g. using default canvas (plt) or a subplot (the given axis)
-        :param spread: how much to spread the connecting lines
-        :param xtickslabels: labels for the xticks (replaces numbers)
-        :param latexify: convert names to latex
-        """
-        if not plot:
-            fig, ax = plt.subplots()
-            ax.set_ylabel("Energy")
-            ax.set_xticks(np.arange(len(self) + 1))
-            ax.set_xlabel("Species")
-        else:
-            fig, ax = plot
-
-        spread_width = 0.1 if spread is True else float(spread)
-
-        length = len(self) + 1
-
-        xs = np.repeat(np.arange(length), 2) + [-0.5 + spread_width, 0.5 - spread_width] * length
-        xs[2:] += np.repeat(np.cumsum(self.steps), 2)
-
-        # swap if going backwards
-        for i in np.where(self.steps < 0)[0] * 2 + 2:
-            xs[[i + 1, i]] = xs[[i, i + 1]]
-
-        ys = np.append([0, 0], np.repeat(np.cumsum(self.energies), 2))
-
-        label = translate(self.name) if latexify else self.name
-        ax.plot(xs, ys, label=label)
-
-        if xtickslabels:
-            ax.set_xticklabels(xtickslabels)
-
-        return fig, ax
