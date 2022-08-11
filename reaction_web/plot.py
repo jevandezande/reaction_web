@@ -122,6 +122,7 @@ def heatmap_path(
     path,
     title: Optional[str] = None,
     plot: Optional[tuple] = None,
+    cmap="coolwarm",
 ) -> tuple:
     """
     Generate a heatmap for a path
@@ -133,7 +134,7 @@ def heatmap_path(
     if title:
         fig.suptitle(title)
 
-    ax.imshow(data)
+    ax.imshow(data, cmap)
 
     return fig, ax
 
@@ -142,6 +143,7 @@ def heatmap_web(
     web,
     title: Optional[str] = None,
     plot: Optional[tuple] = None,
+    cmap="coolwarm",
 ) -> tuple:
     """
     Generate heatmaps for all paths in Web
@@ -156,6 +158,6 @@ def heatmap_web(
     if title:
         fig.suptitle(title)
 
-    ax.imshow(data)
+    ax.imshow(data, cmap)
 
     return fig, ax
