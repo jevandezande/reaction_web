@@ -116,3 +116,46 @@ def plot_web(
             fig.suptitle(title)
 
     return fig, axes
+
+
+def heatmap_path(
+    path,
+    title: Optional[str] = None,
+    plot: Optional[tuple] = None,
+) -> tuple:
+    """
+    Generate a heatmap for a path
+    """
+    data = [path.energies]
+
+    fig, ax = plot or plt.subplots()
+
+    if title:
+        fig.suptitle(title)
+
+    ax.imshow(data)
+
+    return fig, ax
+
+
+def heatmap_web(
+    web,
+    title: Optional[str] = None,
+    plot: Optional[tuple] = None,
+) -> tuple:
+    """
+    Generate heatmaps for all paths in Web
+    """
+    if not all(len(web.paths[0]) == len(p) for p in web.paths):
+        raise ValueError("Can only plot paths with consistent path lengths")
+
+    data = [path.energies for path in web]
+
+    fig, ax = plot or plt.subplots()
+
+    if title:
+        fig.suptitle(title)
+
+    ax.imshow(data)
+
+    return fig, ax

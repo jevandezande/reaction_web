@@ -1,8 +1,9 @@
+import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots
 from pytest import fixture
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
-from reaction_web.plot import plot_path, plot_web
+from reaction_web.plot import heatmap_path, heatmap_web, plot_path, plot_web
 
 
 @fixture
@@ -36,3 +37,20 @@ def test_plot_web(web):
     plot_web(web, plot=subplots())
     plot_web(web, style="subplots")
     plot_web(web, style="stacked")
+
+
+def test_heatmap_path(web):
+    path1, path2, path3 = web
+
+    fig, (ax1, ax2, ax3) = plt.subplots(3)
+
+    heatmap_path(path1, plot=(fig, ax1))
+    heatmap_path(path2, plot=(fig, ax2))
+    heatmap_path(path3, plot=(fig, ax3))
+
+
+def test_heatmap_web(web):
+    path1, path2, path3 = web
+    web2 = Web([path2, path3])
+
+    heatmap_web(web2)
