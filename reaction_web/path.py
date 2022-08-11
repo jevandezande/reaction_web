@@ -1,6 +1,5 @@
-from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Iterable, Iterator, Optional, Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
