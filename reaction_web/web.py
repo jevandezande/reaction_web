@@ -29,3 +29,25 @@ class Web:
 
     def __str__(self) -> str:
         return "\n\n".join(f"{path.name}:\n{path}" for path in self)
+
+    def min(self) -> tuple[tuple[int, int], float]:
+        """
+        Index and value of the minimum achieved on the web path
+        """
+        i, (j, val) = min(
+            enumerate(path.min() for path in self),
+            key=lambda x: x[1][1],
+        )
+
+        return (i, j), val
+
+    def max(self) -> tuple[tuple[int, int], float]:
+        """
+        Index and value of the maximimum achieved on the web path
+        """
+        i, (j, val) = max(
+            enumerate(path.max() for path in self),
+            key=lambda x: x[1][1],
+        )
+
+        return (i, j), val

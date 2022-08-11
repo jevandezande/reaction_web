@@ -56,3 +56,8 @@ b -> c
 c -> d + e
 e -> f + !5.00!"""
     )
+
+
+def test_minmax(web):
+    assert web.min() == ((0, 4), -6.5)
+    assert web.max() == ((1, 1), 2)

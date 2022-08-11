@@ -70,3 +70,10 @@ e -> f + !5.00!"""
 def test_energies(path1, path2):
     assert path1.energies == approx([-1, 2, 0, -7.5])
     assert path2.energies == approx([2, 0, -7.5])
+
+
+def test_minmax(path1, path2):
+    assert path1.min() == (4, -6.5)
+    assert path2.min() == (3, -5.5)
+    assert path1.max() == (2, 1)
+    assert path2.max() == (1, 2)

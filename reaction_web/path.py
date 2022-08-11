@@ -43,6 +43,20 @@ class Path:
         """
         yield from self.reactions
 
+    def min(self) -> tuple[int, float]:
+        """
+        Index and value of the minimum achieved along path
+        """
+        vals: np.ndarray = np.cumsum([0.0] + [r.energy for r in self])
+        return min(enumerate(vals), key=lambda x: x[1])
+
+    def max(self) -> tuple[int, float]:
+        """
+        Index and value of the maximum achieved along path
+        """
+        vals: np.ndarray = np.cumsum([0.0] + [r.energy for r in self])
+        return max(enumerate(vals), key=lambda x: x[1])
+
     @property
     def energies(self) -> np.ndarray:
         """
