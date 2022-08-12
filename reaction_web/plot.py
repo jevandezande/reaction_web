@@ -161,3 +161,24 @@ def heatmap_web(
     ax.imshow(data, cmap)
 
     return fig, ax
+
+
+def heatmap_web_max(
+    web,
+    title: Optional[str] = None,
+    plot: Optional[tuple] = None,
+    cmap="coolwarm",
+) -> tuple:
+    """
+    Generate heatmap from the max of each Path in the Web.
+    """
+    data = [[path.max()[1] for path in web]]
+
+    fig, ax = plot or plt.subplots()
+
+    if title:
+        fig.suptitle(title)
+
+    ax.imshow(data, cmap)
+
+    return fig, ax

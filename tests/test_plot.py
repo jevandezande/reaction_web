@@ -3,7 +3,7 @@ from matplotlib.pyplot import subplots
 from pytest import fixture
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
-from reaction_web.plot import heatmap_path, heatmap_web, plot_path, plot_web
+from reaction_web.plot import heatmap_path, heatmap_web, heatmap_web_max, plot_path, plot_web
 
 
 @fixture
@@ -54,3 +54,9 @@ def test_heatmap_web(web):
     web2 = Web([path2, path3])
 
     heatmap_web(web2)
+
+
+def test_heatmap_web_max(web):
+    path1, path2, path3 = web
+
+    heatmap_web_max(web)
