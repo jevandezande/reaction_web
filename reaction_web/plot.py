@@ -1,10 +1,10 @@
-from typing import Literal, Optional
+from typing import Iterable, Literal, Optional
 
 import matplotlib.pyplot as plt
 import more_itertools as mit
 import numpy as np
 
-from .chem_translate import translate
+from . import Path, Web, translate
 
 
 def gen_plot(steps, xlabel="Species", ylabel="Energy"):
@@ -19,7 +19,7 @@ def gen_plot(steps, xlabel="Species", ylabel="Energy"):
 
 
 def plot_path(
-    path,
+    path: Path,
     plot: Optional[tuple] = None,
     spread: float | bool = True,
     xtickslabels: Optional[list[str]] = None,
@@ -59,7 +59,7 @@ def plot_path(
 
 
 def plot_web(
-    web,
+    web: Web,
     title: Optional[str] = None,
     style: Literal["stacked", "subplots"] = "stacked",
     plot: Optional[tuple] = None,
@@ -140,7 +140,7 @@ def heatmap_path(
 
 
 def heatmap_web(
-    web,
+    web: Web,
     title: Optional[str] = None,
     plot: Optional[tuple] = None,
     cmap="coolwarm",
@@ -163,8 +163,8 @@ def heatmap_web(
     return fig, ax
 
 
-def heatmap_web_max(
-    web,
+def heatmap_webs_max(
+    webs: Iterable[Web],
     title: Optional[str] = None,
     plot: Optional[tuple] = None,
     cmap="coolwarm",
@@ -172,7 +172,7 @@ def heatmap_web_max(
     """
     Generate heatmap from the max of each Path in the Web.
     """
-    data = [[path.max()[1] for path in web]]
+    data = np.array([[path.max()[1] for path in web] for web in webs])
 
     fig, ax = plot or plt.subplots()
 
