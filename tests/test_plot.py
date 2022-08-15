@@ -58,6 +58,7 @@ def test_heatmap_web(web):
 
 def test_heatmap_webs_max(web):
     path1, path2, path3 = web
-    webs = [web, web]
+    web2 = Web([path2, path3, path1])
+    webs = [web, web2]
 
-    heatmap_webs_max(webs)
+    heatmap_webs_max(webs, xtickslabels=[1, 2, 3], ytickslabels=["A", "B"], showvals=True)

@@ -1,4 +1,4 @@
-from typing import Iterable, Literal, Optional
+from typing import Iterable, Literal, Optional, Sequence
 
 import matplotlib.pyplot as plt
 import more_itertools as mit
@@ -167,6 +167,9 @@ def heatmap_webs_max(
     webs: Iterable[Web],
     title: Optional[str] = None,
     plot: Optional[tuple] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
+    ytickslabels: Optional[Sequence[str]] = None,
+    showvals: bool = False,
     cmap="coolwarm",
 ) -> tuple:
     """
@@ -180,5 +183,17 @@ def heatmap_webs_max(
         fig.suptitle(title)
 
     ax.imshow(data, cmap)
+
+    if xtickslabels:
+        ax.set_xticks(np.arange(len(xtickslabels)))
+        ax.set_xticklabels(xtickslabels)
+
+    if ytickslabels:
+        ax.set_yticks(np.arange(len(ytickslabels)))
+        ax.set_yticklabels(ytickslabels)
+
+    if showvals:
+        for (j, i), val in np.ndenumerate(data):
+            ax.text(i, j, f"{val:.1f}", ha="center", va="center")
 
     return fig, ax
