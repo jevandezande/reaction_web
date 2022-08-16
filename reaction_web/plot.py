@@ -94,8 +94,7 @@ def plot_web(
             fig.subplots_adjust(hspace=0, wspace=0)
             axes_flat = list(mit.collapse(axes))
 
-            axes_flat[0].set_xticks(np.arange(max_len + 1))
-            axes_flat[0].set_ylabel("Energy")
+        axes_flat[0].set_ylabel("Energy")
 
     else:
         fig, axes = plot
@@ -107,6 +106,7 @@ def plot_web(
         ax.set_xlabel("Species")
 
     if xtickslabels:
+        axes_flat[0].set_xticks(np.arange(max_len + 1))
         ax.set_xticklabels(xtickslabels)
 
     if title:
