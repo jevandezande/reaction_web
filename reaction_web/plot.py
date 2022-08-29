@@ -5,9 +5,10 @@ import more_itertools as mit
 import numpy as np
 
 from . import Path, Web, translate
+from ._typing import PLOT
 
 
-def gen_plot(steps, xlabel="Species", ylabel="Energy"):
+def gen_plot(steps: int, xlabel: str = "Species", ylabel: str = "Energy") -> PLOT:
     fig, ax = plt.subplots()
 
     ax.set_xticks(np.arange(steps + 1))
@@ -20,11 +21,11 @@ def gen_plot(steps, xlabel="Species", ylabel="Energy"):
 
 def plot_path(
     path: Path,
-    plot: Optional[tuple] = None,
+    plot: Optional[PLOT] = None,
     spread: float | bool = True,
     xtickslabels: Optional[list[str]] = None,
     latexify: bool = True,
-) -> tuple:
+) -> PLOT:
     """
     Plot of the reaction path
 
@@ -62,11 +63,11 @@ def plot_web(
     web: Web,
     title: Optional[str] = None,
     style: Literal["stacked", "subplots"] = "stacked",
-    plot: Optional[tuple] = None,
+    plot: Optional[PLOT] = None,
     spread: float | bool = True,
     xtickslabels: Optional[list[str]] = None,
     latexify: bool = True,
-) -> tuple:
+) -> PLOT:
     """
     Plot the reaction paths.
 
@@ -121,9 +122,9 @@ def plot_web(
 def heatmap_path(
     path,
     title: Optional[str] = None,
-    plot: Optional[tuple] = None,
+    plot: Optional[PLOT] = None,
     cmap="coolwarm",
-) -> tuple:
+) -> PLOT:
     """
     Generate a heatmap for a path
     """
@@ -142,11 +143,11 @@ def heatmap_path(
 def heatmap_web(
     web: Web,
     title: Optional[str] = None,
-    plot: Optional[tuple] = None,
+    plot: Optional[PLOT] = None,
     cmap="coolwarm",
     latexify: bool = True,
     rotate_ylabels: bool = True,
-) -> tuple:
+) -> PLOT:
     """
     Generate heatmaps for all paths in Web
 
@@ -183,12 +184,12 @@ def heatmap_web(
 def heatmap_webs_max(
     webs: Iterable[Web],
     title: Optional[str] = None,
-    plot: Optional[tuple] = None,
+    plot: Optional[PLOT] = None,
     xtickslabels: Optional[Sequence[str]] = None,
     ytickslabels: Optional[Sequence[str]] = None,
     showvals: bool = False,
     cmap="coolwarm",
-) -> tuple:
+) -> PLOT:
     """
     Generate heatmap from the max of each Path in the Web.
     """
