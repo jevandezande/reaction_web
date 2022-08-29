@@ -70,3 +70,6 @@ Web
 )
 plot.plot_web(web)
 plt.show()
+
+plot.heatmap_web(web)
+plt.show()

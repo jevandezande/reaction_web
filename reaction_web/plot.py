@@ -144,16 +144,33 @@ def heatmap_web(
     title: Optional[str] = None,
     plot: Optional[tuple] = None,
     cmap="coolwarm",
+    latexify: bool = True,
+    rotate_ylabels: bool = True,
 ) -> tuple:
     """
     Generate heatmaps for all paths in Web
+
+    :param web: Web to plot
+    :param title: Title for plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
+    :param cmap: colormap for heatmap
+    :param latexify: convert names to latex
+    :param rotate_ylabels: rotate labels on y-axis
     """
     if not all(len(web.paths[0]) == len(p) for p in web.paths):
-        raise ValueError("Can only plot paths with consistent path lengths")
+        raise ValueError("Can only plot paths with consistent path lengths.")
 
     data = [path.energies for path in web]
 
     fig, ax = plot or plt.subplots()
+
+    ax.set_xlabel("Species")
+    ax.set_ylabel("Paths")
+
+    ax.set_xticks(np.arange(len(web.paths[0]) + 1))
+    ylabels = [(translate(path.name) if latexify else path.name) for path in web]
+    ax.set_yticks(np.arange(len(web)), ylabels, rotation=90 * rotate_ylabels, va="center")
 
     if title:
         fig.suptitle(title)
