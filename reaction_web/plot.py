@@ -144,6 +144,7 @@ def heatmap_web(
     web: Web,
     title: Optional[str] = None,
     plot: Optional[PLOT] = None,
+    showvals: bool = False,
     cmap="coolwarm",
     latexify: bool = True,
     rotate_ylabels: bool = True,
@@ -177,6 +178,10 @@ def heatmap_web(
         fig.suptitle(title)
 
     ax.imshow(data, cmap)
+
+    if showvals:
+        for (j, i), val in np.ndenumerate(data):
+            ax.text(i, j, f"{val:.1f}", ha="center", va="center")
 
     return fig, ax
 
