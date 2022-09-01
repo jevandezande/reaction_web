@@ -10,6 +10,7 @@ from ._typing import PLOT
 
 def gen_plot(
     steps: int,
+    title: str = "",
     xlabel: str = "Species",
     ylabel: str = "Energy",
     xtickslabels: Optional[list[str]] = None,
@@ -20,8 +21,12 @@ def gen_plot(
     :param steps: number of steps
     :param xlabel: label for the x-axis
     :param ylabel: label for the y-axis
+    :param xtickslabels: labels to the x-ticks
     """
     fig, ax = plt.subplots()
+
+    if title:
+        fig.suptitle(title)
 
     ax.set_xticks(np.arange(steps + 1))
     ax.set_xlabel(xlabel)
@@ -73,9 +78,9 @@ def plot_path(
 
 def plot_web(
     web: Web,
-    title: Optional[str] = None,
-    style: Literal["stacked", "subplots"] = "stacked",
+    title: str = "",
     plot: Optional[PLOT] = None,
+    style: Literal["stacked", "subplots"] = "stacked",
     spread: float | bool = True,
     xtickslabels: Optional[list[str]] = None,
     latexify: bool = True,
@@ -96,7 +101,7 @@ def plot_web(
 
     if not plot:
         if style == "stacked":
-            fig, axes = gen_plot(max_len, xtickslabels=xtickslabels)
+            fig, axes = gen_plot(max_len, title, xtickslabels=xtickslabels)
             axes_flat = [axes] * len(web)
 
         elif style == "subplots":
@@ -105,6 +110,10 @@ def plot_web(
 
             fig, axes = plt.subplots(height, width, sharex=True, sharey=True)
             fig.subplots_adjust(hspace=0, wspace=0)
+
+            if title:
+                fig.suptitle(title)
+
             axes_flat = list(mit.collapse(axes))
 
             if xtickslabels:
@@ -122,18 +131,15 @@ def plot_web(
         ax.legend()
         ax.set_xlabel("Species")
 
-    if title:
-        if plot:
-            plot[1].set_title(title)
-        else:
-            fig.suptitle(title)
+    if plot and title:
+        plot[1].set_title(title)
 
     return fig, axes
 
 
 def heatmap_path(
     path,
-    title: Optional[str] = None,
+    title: str = "",
     plot: Optional[PLOT] = None,
     cmap="coolwarm",
 ) -> PLOT:
@@ -154,7 +160,7 @@ def heatmap_path(
 
 def heatmap_web(
     web: Web,
-    title: Optional[str] = None,
+    title: str = "",
     plot: Optional[PLOT] = None,
     xtickslabels: Optional[Sequence[str]] = None,
     rotate_ylabels: bool = True,
@@ -204,7 +210,7 @@ def heatmap_web(
 
 def heatmap_webs_max(
     webs: Iterable[Web],
-    title: Optional[str] = None,
+    title: str = "",
     plot: Optional[PLOT] = None,
     xtickslabels: Optional[Sequence[str]] = None,
     ytickslabels: Optional[Sequence[str]] = None,
