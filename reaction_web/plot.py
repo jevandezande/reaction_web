@@ -13,7 +13,7 @@ def gen_plot(
     title: str = "",
     xlabel: str = "Species",
     ylabel: str = "Energy",
-    xtickslabels: Optional[list[str]] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
 ) -> PLOT:
     """
     Generates a plot
@@ -21,7 +21,7 @@ def gen_plot(
     :param steps: number of steps
     :param xlabel: label for the x-axis
     :param ylabel: label for the y-axis
-    :param xtickslabels: labels to the x-ticks
+    :param xtickslabels: labels for the x-ticks
     """
     fig, ax = plt.subplots()
 
@@ -41,9 +41,10 @@ def gen_plot(
 
 def plot_path(
     path: Path,
+    title: str = "",
     plot: Optional[PLOT] = None,
     spread: float | bool = True,
-    xtickslabels: Optional[list[str]] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
     latexify: bool = True,
 ) -> PLOT:
     """
@@ -55,7 +56,7 @@ def plot_path(
     :param xtickslabels: labels for the xticks (replaces numbers)
     :param latexify: convert names to latex
     """
-    fig, ax = plot if plot else gen_plot(len(path))
+    fig, ax = plot if plot else gen_plot(len(path), title, xtickslabels=xtickslabels)
 
     spread_width = 0.1 if spread is True else float(spread)
 
@@ -82,7 +83,7 @@ def plot_web(
     plot: Optional[PLOT] = None,
     style: Literal["stacked", "subplots"] = "stacked",
     spread: float | bool = True,
-    xtickslabels: Optional[list[str]] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
     latexify: bool = True,
 ) -> PLOT:
     """
