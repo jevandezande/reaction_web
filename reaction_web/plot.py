@@ -8,11 +8,26 @@ from . import Path, Web, translate
 from ._typing import PLOT
 
 
-def gen_plot(steps: int, xlabel: str = "Species", ylabel: str = "Energy") -> PLOT:
+def gen_plot(
+    steps: int,
+    xlabel: str = "Species",
+    ylabel: str = "Energy",
+    xtickslabels: Optional[list[str]] = None,
+) -> PLOT:
+    """
+    Generates a plot
+
+    :param steps: number of steps
+    :param xlabel: label for the x-axis
+    :param ylabel: label for the y-axis
+    """
     fig, ax = plt.subplots()
 
     ax.set_xticks(np.arange(steps + 1))
     ax.set_xlabel(xlabel)
+
+    if xtickslabels:
+        ax.set_xticklabels(xtickslabels)
 
     ax.set_ylabel(ylabel)
 
@@ -53,9 +68,6 @@ def plot_path(
     label = translate(path.name) if latexify else path.name
     ax.plot(xs, ys, label=label)
 
-    if xtickslabels:
-        ax.set_xticklabels(xtickslabels)
-
     return fig, ax
 
 
@@ -84,7 +96,7 @@ def plot_web(
 
     if not plot:
         if style == "stacked":
-            fig, axes = gen_plot(max_len)
+            fig, axes = gen_plot(max_len, xtickslabels=xtickslabels)
             axes_flat = [axes] * len(web)
 
         elif style == "subplots":
@@ -95,7 +107,11 @@ def plot_web(
             fig.subplots_adjust(hspace=0, wspace=0)
             axes_flat = list(mit.collapse(axes))
 
-        axes_flat[0].set_ylabel("Energy")
+            if xtickslabels:
+                axes_flat[0].set_xticks(np.arange(max_len + 1))
+                axes_flat[-1].set_xticklabels(xtickslabels)
+
+            axes_flat[0].set_ylabel("Energy")
 
     else:
         fig, axes = plot
@@ -105,10 +121,6 @@ def plot_web(
         plot_path(path, plot=(fig, ax), spread=spread, latexify=latexify)
         ax.legend()
         ax.set_xlabel("Species")
-
-    if xtickslabels:
-        axes_flat[0].set_xticks(np.arange(max_len + 1))
-        ax.set_xticklabels(xtickslabels)
 
     if title:
         if plot:
@@ -144,9 +156,11 @@ def heatmap_web(
     web: Web,
     title: Optional[str] = None,
     plot: Optional[PLOT] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
+    rotate_ylabels: bool = True,
+    showvals: bool = False,
     cmap="coolwarm",
     latexify: bool = True,
-    rotate_ylabels: bool = True,
 ) -> PLOT:
     """
     Generate heatmaps for all paths in Web
@@ -170,6 +184,9 @@ def heatmap_web(
     ax.set_ylabel("Paths")
 
     ax.set_xticks(np.arange(len(web.paths[0]) + 1))
+    if xtickslabels:
+        ax.set_xticklabels(xtickslabels)
+
     ylabels = [(translate(path.name) if latexify else path.name) for path in web]
     ax.set_yticks(np.arange(len(web)), ylabels, rotation=90 * rotate_ylabels, va="center")
 
@@ -177,6 +194,10 @@ def heatmap_web(
         fig.suptitle(title)
 
     ax.imshow(data, cmap)
+
+    if showvals:
+        for (j, i), val in np.ndenumerate(data):
+            ax.text(i, j, f"{val:.1f}", ha="center", va="center")
 
     return fig, ax
 
