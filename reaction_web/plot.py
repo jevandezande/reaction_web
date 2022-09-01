@@ -39,6 +39,37 @@ def gen_plot(
     return fig, ax
 
 
+def gen_heatmap_plot(
+    title: str = "",
+    xlabel: str = "",
+    ylabel: str = "",
+    xtickslabels: Optional[Sequence[str]] = None,
+    ytickslabels: Optional[Sequence[str]] = None,
+    rotate_ylabels: bool = False,
+) -> PLOT:
+    """
+    Generates a heatmap plot
+
+    :param title: title for the plot
+    :param xlabel, ylabel: label for the x-axis, y-axis
+    :param xtickslabels, ytickslabels: labels to the x-ticks, y-ticks
+    """
+    fig, ax = plt.subplots()
+
+    if title:
+        fig.suptitle(title)
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    if xtickslabels:
+        ax.set_xticks(np.arange(len(xtickslabels)), xtickslabels)
+    if ytickslabels:
+        ax.set_yticks(np.arange(len(ytickslabels)), ytickslabels, rotation=90 * rotate_ylabels, va="center")
+
+    return fig, ax
+
+
 def plot_path(
     path: Path,
     title: str = "",
@@ -142,19 +173,17 @@ def heatmap_path(
     path,
     title: str = "",
     plot: Optional[PLOT] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
     cmap="coolwarm",
 ) -> PLOT:
     """
     Generate a heatmap for a path
     """
-    data = [path.energies]
+    energies = [path.energies]
 
-    fig, ax = plot or plt.subplots()
+    fig, ax = plot or gen_heatmap_plot(title, "Species", xtickslabels=xtickslabels)
 
-    if title:
-        fig.suptitle(title)
-
-    ax.imshow(data, cmap)
+    ax.imshow([energies], cmap)
 
     return fig, ax
 
@@ -164,6 +193,7 @@ def heatmap_web(
     title: str = "",
     plot: Optional[PLOT] = None,
     xtickslabels: Optional[Sequence[str]] = None,
+    ytickslabels: Optional[Sequence[str]] = None,
     rotate_ylabels: bool = True,
     showvals: bool = False,
     cmap="coolwarm",
@@ -176,26 +206,22 @@ def heatmap_web(
     :param title: Title for plot
     :param plot: where to plot the Path
         e.g. using default canvas (plt) or a subplot (the given axis)
+    :param xtickslabels: labels for the x-ticks
+    :param ytickslabels: labels for the y-ticks
+    :param rotate_ylabels: rotate labels on y-axis
+    :param showvals: show cell values on the heatmap
     :param cmap: colormap for heatmap
     :param latexify: convert names to latex
-    :param rotate_ylabels: rotate labels on y-axis
     """
     if not all(len(web.paths[0]) == len(p) for p in web.paths):
         raise ValueError("Can only plot paths with consistent path lengths.")
 
-    data = [path.energies for path in web]
+    data = np.array([path.energies for path in web])
 
-    fig, ax = plot or plt.subplots()
+    if not ytickslabels:
+        ytickslabels = [(translate(path.name) if latexify else path.name) for path in web]
 
-    ax.set_xlabel("Species")
-    ax.set_ylabel("Paths")
-
-    ax.set_xticks(np.arange(len(web.paths[0]) + 1))
-    if xtickslabels:
-        ax.set_xticklabels(xtickslabels)
-
-    ylabels = [(translate(path.name) if latexify else path.name) for path in web]
-    ax.set_yticks(np.arange(len(web)), ylabels, rotation=90 * rotate_ylabels, va="center")
+    fig, ax = plot or gen_heatmap_plot(title, "Species", "Paths", xtickslabels, ytickslabels, rotate_ylabels)
 
     if title:
         fig.suptitle(title)
@@ -215,6 +241,7 @@ def heatmap_webs_max(
     plot: Optional[PLOT] = None,
     xtickslabels: Optional[Sequence[str]] = None,
     ytickslabels: Optional[Sequence[str]] = None,
+    rotate_ylabels: bool = False,
     showvals: bool = False,
     cmap="coolwarm",
 ) -> PLOT:
@@ -223,20 +250,9 @@ def heatmap_webs_max(
     """
     data = np.array([[path.max()[1] for path in web] for web in webs])
 
-    fig, ax = plot or plt.subplots()
-
-    if title:
-        fig.suptitle(title)
+    fig, ax = plot or gen_heatmap_plot(title, "R1", "R2", xtickslabels, ytickslabels, rotate_ylabels)
 
     ax.imshow(data, cmap)
-
-    if xtickslabels:
-        ax.set_xticks(np.arange(len(xtickslabels)))
-        ax.set_xticklabels(xtickslabels)
-
-    if ytickslabels:
-        ax.set_yticks(np.arange(len(ytickslabels)))
-        ax.set_yticklabels(ytickslabels)
 
     if showvals:
         for (j, i), val in np.ndenumerate(data):
