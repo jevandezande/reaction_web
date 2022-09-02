@@ -174,6 +174,7 @@ def heatmap_path(
     title: str = "",
     plot: Optional[PLOT] = None,
     xtickslabels: Optional[Sequence[str]] = None,
+    showvals: bool = False,
     cmap="coolwarm",
 ) -> PLOT:
     """
@@ -184,6 +185,10 @@ def heatmap_path(
     fig, ax = plot or gen_heatmap_plot(title, "Species", xtickslabels=xtickslabels)
 
     ax.imshow([energies], cmap)
+
+    if showvals:
+        for i, val in enumerate(energies):
+            ax.text(i, 0, f"{val:.1f}", ha="center", va="center")
 
     return fig, ax
 
