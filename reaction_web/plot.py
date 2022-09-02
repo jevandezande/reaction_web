@@ -1,4 +1,4 @@
-from typing import Iterable, Literal, Optional, Sequence
+from typing import Literal, Optional, Sequence
 
 import matplotlib.pyplot as plt
 import more_itertools as mit
@@ -87,7 +87,10 @@ def plot_path(
     :param xtickslabels: labels for the xticks (replaces numbers)
     :param latexify: convert names to latex
     """
-    fig, ax = plot if plot else gen_plot(len(path), title, xtickslabels=xtickslabels)
+    if not xtickslabels:
+        xtickslabels = list(map(str, range(len(path) + 1)))
+
+    fig, ax = plot or gen_plot(len(path), title, xtickslabels=xtickslabels)
 
     spread_width = 0.1 if spread is True else float(spread)
 
@@ -130,6 +133,8 @@ def plot_web(
     :param latexify: convert names to latex
     """
     max_len = max(len(path) for path in web)
+    if not xtickslabels:
+        xtickslabels = list(map(str, range(max_len + 1)))
 
     if not plot:
         if style == "stacked":
@@ -148,8 +153,8 @@ def plot_web(
 
             axes_flat = list(mit.collapse(axes))
 
+            axes_flat[0].set_xticks(np.arange(max_len + 1))
             if xtickslabels:
-                axes_flat[0].set_xticks(np.arange(max_len + 1))
                 axes_flat[-1].set_xticklabels(xtickslabels)
 
             axes_flat[0].set_ylabel("Energy")
@@ -180,9 +185,12 @@ def heatmap_path(
     """
     Generate a heatmap for a path
     """
-    energies = [path.energies]
+    energies = path.energies
 
-    fig, ax = plot or gen_heatmap_plot(title, "Species", xtickslabels=xtickslabels)
+    if not xtickslabels:
+        xtickslabels = list(map(str, range(len(path) + 1)))
+
+    fig, ax = plot or gen_heatmap_plot(title, "Species", xtickslabels=xtickslabels, ytickslabels=[""])
 
     ax.imshow([energies], cmap)
 
@@ -218,11 +226,14 @@ def heatmap_web(
     :param cmap: colormap for heatmap
     :param latexify: convert names to latex
     """
-    if not all(len(web.paths[0]) == len(p) for p in web.paths):
+    web_length = len(web.paths[0])
+    if not all(web_length == len(p) for p in web.paths):
         raise ValueError("Can only plot paths with consistent path lengths.")
 
     data = np.array([path.energies for path in web])
 
+    if not xtickslabels:
+        xtickslabels = list(map(str, range(web_length + 1)))
     if not ytickslabels:
         ytickslabels = [(translate(path.name) if latexify else path.name) for path in web]
 
@@ -241,7 +252,7 @@ def heatmap_web(
 
 
 def heatmap_webs_max(
-    webs: Iterable[Web],
+    webs: Sequence[Web],
     title: str = "",
     plot: Optional[PLOT] = None,
     xtickslabels: Optional[Sequence[str]] = None,
@@ -251,9 +262,18 @@ def heatmap_webs_max(
     cmap="coolwarm",
 ) -> PLOT:
     """
-    Generate heatmap from the max of each Path in the Web.
+    Generate heatmap from the max of each Path in the Webs.
     """
+    length = len(webs[0])
+    if not all(length == len(web) for web in webs):
+        raise ValueError("Can only plot Webs with the same number of Paths")
+
     data = np.array([[path.max()[1] for path in web] for web in webs])
+
+    if not xtickslabels:
+        xtickslabels = list(map(str, range(length + 1)))
+    if not ytickslabels:
+        ytickslabels = list(map(str, range(len(webs) + 1)))
 
     fig, ax = plot or gen_heatmap_plot(title, "R1", "R2", xtickslabels, ytickslabels, rotate_ylabels)
 
