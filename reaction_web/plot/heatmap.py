@@ -21,6 +21,7 @@ def gen_heatmap_plot(
     :param title: title for the plot
     :param xlabel, ylabel: label for the x-axis, y-axis
     :param xtickslabels, ytickslabels: labels to the x-ticks, y-ticks
+    :param rotate_ylabels: rotate labels on y-axis
     """
     fig, ax = plt.subplots()
 
@@ -47,7 +48,15 @@ def heatmap_path(
     cmap="coolwarm",
 ) -> PLOT:
     """
-    Generate a heatmap for a path
+    Generate a heatmap for a Path
+
+    :param path: Path to plot
+    :param title: title for plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
+    :param xtickslabels: labels for the x-ticks
+    :param showvals: show cell values on the heatmap
+    :param cmap: colormap for heatmap
     """
     energies = path.energies
 
@@ -80,7 +89,7 @@ def heatmap_web(
     Generate heatmaps for all paths in Web
 
     :param web: Web to plot
-    :param title: Title for plot
+    :param title: title for plot
     :param plot: where to plot the Path
         e.g. using default canvas (plt) or a subplot (the given axis)
     :param xtickslabels: labels for the x-ticks
@@ -127,6 +136,16 @@ def heatmap_webs_max(
 ) -> PLOT:
     """
     Generate heatmap from the max of each Path in the Webs.
+
+    :param webs: Webs to plot
+    :param title: title for plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
+    :param xtickslabels: labels for the x-ticks
+    :param ytickslabels: labels for the y-ticks
+    :param rotate_ylabels: rotate labels on y-axis
+    :param showvals: show cell values on the heatmap
+    :param cmap: colormap for heatmap
     """
     length = len(webs[0])
     if not all(length == len(web) for web in webs):

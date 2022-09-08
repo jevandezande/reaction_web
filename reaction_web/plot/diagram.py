@@ -48,8 +48,10 @@ def plot_path(
     latexify: bool = True,
 ) -> PLOT:
     """
-    Plot of the reaction path
+    Plot of the reaction Path
 
+    :param path: Path to plot
+    :param title: title for the plot
     :param plot: where to plot the Path
         e.g. using default canvas (plt) or a subplot (the given axis)
     :param spread: how much to spread the connecting lines
@@ -90,13 +92,15 @@ def plot_web(
     latexify: bool = True,
 ) -> PLOT:
     """
-    Plot the reaction paths.
+    Plot the reaction Paths in a Web.
 
+    :param web: Web to plot
+    :param title: title for the plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
     :param style: style of plots:
         stacked: all paths on the same plot
         subplots: each path in its own subplot
-    :param plot: where to plot the Path
-        e.g. using default canvas (plt) or a subplot (the given axis)
     :param spread: how much to spread the connecting lines
     :param xtickslabels: labels for the xticks (replaces numbers)
     :param latexify: convert names to latex
