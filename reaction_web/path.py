@@ -47,15 +47,13 @@ class Path:
         """
         Index and value of the minimum achieved along path
         """
-        vals: np.ndarray = np.cumsum([0.0] + [r.energy for r in self])
-        return min(enumerate(vals), key=lambda x: x[1])
+        return min(enumerate(self.relative_energies), key=lambda x: x[1])
 
     def max(self) -> tuple[int, float]:
         """
         Index and value of the maximum achieved along path
         """
-        vals: np.ndarray = np.cumsum([0.0] + [r.energy for r in self])
-        return max(enumerate(vals), key=lambda x: x[1])
+        return max(enumerate(self.relative_energies), key=lambda x: x[1])
 
     @property
     def energies(self) -> np.ndarray:
@@ -63,3 +61,10 @@ class Path:
         An array of the energies of the reactions
         """
         return np.fromiter(map(lambda r: r.energy, self), dtype=float)
+
+    @property
+    def relative_energies(self) -> np.ndarray:
+        """
+        An array of the cumulative energy along the path
+        """
+        return np.cumsum([0.0] + [r.energy for r in self])
