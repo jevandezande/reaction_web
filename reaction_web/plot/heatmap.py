@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Callable, Optional, Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -124,6 +124,54 @@ def heatmap_web(
     return fig, ax
 
 
+def heatmap_webs_function(
+    webs: Sequence[Web],
+    function: Callable[[Path], float],
+    title: str = "",
+    plot: Optional[PLOT] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
+    ytickslabels: Optional[Sequence[str]] = None,
+    rotate_ylabels: bool = False,
+    showvals: bool = False,
+    cmap="coolwarm",
+) -> PLOT:
+    """
+    Generate heatmap from a value in each Path in the Webs
+
+    Note: each Web is on a different row, with Paths spread across columns
+
+    :param webs: Webs to plot
+    :param title: title for plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
+    :param xtickslabels: labels for the x-ticks
+    :param ytickslabels: labels for the y-ticks
+    :param rotate_ylabels: rotate labels on y-axis
+    :param showvals: show cell values on the heatmap
+    :param cmap: colormap for heatmap
+    """
+    length = len(webs[0])
+    if not all(length == len(web) for web in webs):
+        raise ValueError("Can only plot Webs with the same number of Paths")
+
+    data = np.array([[function(path) for path in web] for web in webs])
+
+    if not xtickslabels:
+        xtickslabels = list(map(str, range(length + 1)))
+    if not ytickslabels:
+        ytickslabels = list(map(str, range(len(webs) + 1)))
+
+    fig, ax = plot or gen_heatmap_plot(title, "R1", "R2", xtickslabels, ytickslabels, rotate_ylabels)
+
+    ax.imshow(data, cmap)
+
+    if showvals:
+        for (j, i), val in np.ndenumerate(data):
+            ax.text(i, j, f"{val:.1f}", ha="center", va="center")
+
+    return fig, ax
+
+
 def heatmap_webs_max(
     webs: Sequence[Web],
     title: str = "",
@@ -149,23 +197,114 @@ def heatmap_webs_max(
     :param showvals: show cell values on the heatmap
     :param cmap: colormap for heatmap
     """
-    length = len(webs[0])
-    if not all(length == len(web) for web in webs):
-        raise ValueError("Can only plot Webs with the same number of Paths")
 
-    data = np.array([[path.max()[1] for path in web] for web in webs])
+    def path_max(path: Path) -> float:
+        return path.max()[0]
 
-    if not xtickslabels:
-        xtickslabels = list(map(str, range(length + 1)))
-    if not ytickslabels:
-        ytickslabels = list(map(str, range(len(webs) + 1)))
+    return heatmap_webs_function(
+        webs, path_max, title, plot, xtickslabels, ytickslabels, rotate_ylabels, showvals, cmap
+    )
 
-    fig, ax = plot or gen_heatmap_plot(title, "R1", "R2", xtickslabels, ytickslabels, rotate_ylabels)
 
-    ax.imshow(data, cmap)
+def heatmap_webs_min(
+    webs: Sequence[Web],
+    title: str = "",
+    plot: Optional[PLOT] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
+    ytickslabels: Optional[Sequence[str]] = None,
+    rotate_ylabels: bool = False,
+    showvals: bool = False,
+    cmap="coolwarm",
+) -> PLOT:
+    """
+    Generate heatmap from the min of each Path in the Webs
 
-    if showvals:
-        for (j, i), val in np.ndenumerate(data):
-            ax.text(i, j, f"{val:.1f}", ha="center", va="center")
+    Note: each Web is on a different row, with Paths spread across columns
 
-    return fig, ax
+    :param webs: Webs to plot
+    :param title: title for plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
+    :param xtickslabels: labels for the x-ticks
+    :param ytickslabels: labels for the y-ticks
+    :param rotate_ylabels: rotate labels on y-axis
+    :param showvals: show cell values on the heatmap
+    :param cmap: colormap for heatmap
+    """
+
+    def path_min(path: Path) -> float:
+        return path.min()[0]
+
+    return heatmap_webs_function(
+        webs, path_min, title, plot, xtickslabels, ytickslabels, rotate_ylabels, showvals, cmap
+    )
+
+
+def heatmap_webs_step(
+    webs: Sequence[Web],
+    step: int,
+    title: str = "",
+    plot: Optional[PLOT] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
+    ytickslabels: Optional[Sequence[str]] = None,
+    rotate_ylabels: bool = False,
+    showvals: bool = False,
+    cmap="coolwarm",
+) -> PLOT:
+    """
+    Generate heatmap from a specific step for each Path in the Webs
+
+    Note: each Web is on a different row, with Paths spread across columns
+
+    :param webs: Webs to plot
+    :param title: title for plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
+    :param xtickslabels: labels for the x-ticks
+    :param ytickslabels: labels for the y-ticks
+    :param rotate_ylabels: rotate labels on y-axis
+    :param showvals: show cell values on the heatmap
+    :param cmap: colormap for heatmap
+    """
+
+    def path_step(path: Path) -> float:
+        return path.energies[step]
+
+    return heatmap_webs_function(
+        webs, path_step, title, plot, xtickslabels, ytickslabels, rotate_ylabels, showvals, cmap
+    )
+
+
+def heatmap_webs_relative_step(
+    webs: Sequence[Web],
+    step: int,
+    title: str = "",
+    plot: Optional[PLOT] = None,
+    xtickslabels: Optional[Sequence[str]] = None,
+    ytickslabels: Optional[Sequence[str]] = None,
+    rotate_ylabels: bool = False,
+    showvals: bool = False,
+    cmap="coolwarm",
+) -> PLOT:
+    """
+    Generate heatmap from a specific step for each Path in the Webs
+
+    Note: each Web is on a different row, with Paths spread across columns
+
+    :param webs: Webs to plot
+    :param title: title for plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
+    :param xtickslabels: labels for the x-ticks
+    :param ytickslabels: labels for the y-ticks
+    :param rotate_ylabels: rotate labels on y-axis
+    :param showvals: show cell values on the heatmap
+    :param cmap: colormap for heatmap
+    """
+
+    def path_relative_step(path: Path) -> float:
+        return path.relative_energies[step]
+
+    return heatmap_webs_function(
+        webs, path_relative_step, title, plot, xtickslabels, ytickslabels, rotate_ylabels, showvals, cmap
+    )
