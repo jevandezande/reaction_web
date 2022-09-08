@@ -135,7 +135,9 @@ def heatmap_webs_max(
     cmap="coolwarm",
 ) -> PLOT:
     """
-    Generate heatmap from the max of each Path in the Webs.
+    Generate heatmap from the max of each Path in the Webs
+
+    Note: each Web is on a different row, with Paths spread across columns
 
     :param webs: Webs to plot
     :param title: title for plot
