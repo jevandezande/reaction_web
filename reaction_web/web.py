@@ -11,6 +11,7 @@ class Web:
     """
 
     paths: Sequence[Path]
+    name: str = ""
 
     def __iter__(self) -> Iterator[Path]:
         """
@@ -25,10 +26,10 @@ class Web:
         return len(self.paths)
 
     def __repr__(self) -> str:
-        return f"<Web [{', '.join(path.name for path in self)}]>"
+        return f"<Web \"{self.name}\" [{', '.join(path.name for path in self)}]>"
 
     def __str__(self) -> str:
-        return "\n\n".join(f"{path.name}:\n{path}" for path in self)
+        return f"# {self.name}\n" + "\n\n".join(f"{path.name}:\n{path}" for path in self)
 
     def min(self) -> tuple[tuple[int, int], float]:
         """

@@ -20,7 +20,7 @@ def web():
     path2 = Path([r2, r3, r4], "P2")
     path3 = Path([r2, r3, r4], "", step_sizes=[2, -1, 3])
 
-    return Web([path1, path2, path3])
+    return Web([path1, path2, path3], "My Web")
 
 
 def test_iter(web):
@@ -33,13 +33,14 @@ def test_len(web):
 
 
 def test_repr(web):
-    assert repr(web) == "<Web [P1, P2, ]>"
+    assert repr(web) == '<Web "My Web" [P1, P2, ]>'
 
 
 def test_str(web):
     assert (
         str(web)
         == """\
+# My Web
 P1:
 a -> b
 b -> c
