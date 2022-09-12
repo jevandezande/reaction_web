@@ -40,6 +40,7 @@ def pathify(data: pd.DataFrame, path_name: str = "") -> Path:
     return Path(reactions, path_name)
 
 
+# Recursive types are not yet available in mypy: https://github.com/python/mypy/pull/13297
 # WEB_DICT = dict[str, Web] | dict[str, "WEB_DICT"]
 
 
@@ -48,7 +49,7 @@ def webify(data: pd.DataFrame, r_groups: Sequence[str], name: str = ""):  # -> W
         raise ValueError(f"Expected ≥ 1 r-group, got: {r_groups=}")
 
     if len(r_groups) == 1:
-        return Web([pathify(path_data, r_group) for r_group, path_data in data.groupby(r_groups)], name)
+        return Web([pathify(path_data, f"{name} {r}") for r, path_data in data.groupby(r_groups)], name)
 
     head, *tail = r_groups
-    return {r_group: webify(values, tail, r_group) for r_group, values in data.groupby(head)}
+    return {r: webify(values, tail, f"{name} {r}".strip()) for r, values in data.groupby(head)}
