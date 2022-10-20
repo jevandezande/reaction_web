@@ -1,26 +1,33 @@
-[project]
-authors = [ { name = "Jonathon Vandezande", email = "jevandezande@gmail.com" }, ]
-requires-python = ">=3.9"
-license = "MIT"
-license_file = "LICENSE"
-name = "Reaction Web"
+[tool.poetry]
+name = "reaction_web"
+version = "0.2.0"
 description = "Reaction path plotter"
-readme = "README.md"
+authors = ["Jonathon Vandezande"]
 keywords = ["chemistry", "reaction", "plotting"]
-classifiers = [
-	"Development Status :: 3 - Alpha",
-	"Intended Audience :: Developers",
-	"License :: OSI Approved :: MIT",
-	"Operating System :: OS Independent",
-	"Programming Language :: Python",
-	"Programming Language :: Python :: 3.10",
-	"Topic :: Software Development :: Libraries :: Python Modules",
-]
-
-[project.urls]
+license = "MIT"
+readme = "README.md"
 repository = "https://github.com/jevandezande/reaction_web"
 
-[project.scripts]
+[tool.poetry.dependencies]
+python = "^3.10"
+pandas = "*"
+matplotlib = "*"
+more-itertools = "*"
+natsort = "*"
+numpy = "*"
+
+[tool.poetry.group.dev.dependencies]
+black = "==22.10"
+flake8 = "*"
+isort = "*"
+mypy = "*"
+pre-commit = "*"
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+pytest-cov = "*"
+
+[tool.poetry.scripts]
 
 [tool.black]
 line-length = 120
@@ -33,8 +40,13 @@ line_length = 120
 [tool.mypy]
 files = ["reaction_web", "tests"]
 ignore_missing_imports = true
+pretty = true
 
 [tool.pytest]
 testpaths = ["tests"]
 addopts = "--doctest-modules"
 doctest_optionflags = "NORMALIZE_WHITESPACE"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

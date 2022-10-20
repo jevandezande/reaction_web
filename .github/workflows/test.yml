@@ -11,20 +11,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+            cache: "poetry"
+            python-version: "3.10"
 
-      - name: Install dependencies with pipenv
-        run: |
-          pip install pipenv
-          pipenv install --deploy --dev
+      - run: |
+            pip install pipx
+            pipx install poetry
 
-      - run: pipenv run isort --diff .
-      - run: pipenv run black --check .
-      - run: pipenv run flake8
-      - run: pipenv run mypy
-      - run: pipenv run pytest --cov --cov-report=xml
+      - name: Install dependencies with poetry
+        run: /root/.local/bin/poetry install
+
+      - run: /root/.local/bin/poetry run isort --diff .
+      - run: /root/.local/bin/poetry run black --check .
+      - run: /root/.local/bin/poetry run flake8
+      - run: /root/.local/bin/poetry run mypy
+      - run: /root/.local/bin/poetry run pytest --cov --cov-report=xml
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v3
