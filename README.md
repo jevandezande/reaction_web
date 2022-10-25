@@ -44,8 +44,3 @@ See [example.py](example.py) for usage.
 Contributions
 -------------
 Pull requests to add new features are welcome, just please don't add unnecessary complexity.
-
-
-Credits
--------
-This package was created with Cookiecutter and the [jevandezande/pipenv-cookiecutter](https://github.com/jevandezande/pipenv-cookiecutter) project template.
