@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Iterator, Sequence
+
+from .molecule import Molecule
 
 
 @dataclass
@@ -8,8 +10,8 @@ class Reaction:
     A transformation from reactant to product molecules.
     """
 
-    reactants: Sequence
-    products: Sequence
+    reactants: Sequence[Molecule]
+    products: Sequence[Molecule]
 
     def __str__(self) -> str:
         """
@@ -17,6 +19,10 @@ class Reaction:
         """
         display = lambda mols: " + ".join(map(lambda x: x.name, mols))
         return f"{display(self.reactants)} -> {display(self.products)}"
+
+    def __iter__(self) -> Iterator[Sequence[Molecule]]:
+        yield self.reactants
+        yield self.products
 
     @property
     def energy(self) -> float:

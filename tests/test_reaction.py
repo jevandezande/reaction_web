@@ -9,7 +9,12 @@ def test_Reaction():
     assert r.reactants == [a]
     assert r.products == [b]
     assert r.energy == -1
+
     assert str(r) == "a -> b"
+
+    reactants, products = r
+    assert reactants == [a]
+    assert products == [b]
 
 
 def test_EReaction():
@@ -20,4 +25,9 @@ def test_EReaction():
     assert r.reactants == [a]
     assert r.products == [b]
     assert r.energy == -2
+
     assert str(r) == "a -> b + !1.00!"
+
+    reactants, products = r
+    assert reactants == [a]
+    assert products == [b]
