@@ -1,4 +1,4 @@
-from pytest import approx, fixture
+from pytest import approx, fixture, raises
 
 from reaction_web import EReaction, Molecule, Path, Reaction
 
@@ -65,6 +65,14 @@ b -> c
 c -> d + e
 e -> f + !5.00!"""
     )
+
+
+def test_getitem(path1, path2):
+    assert path1[1] == path1.reactions[1]
+    assert path2[2] == path2.reactions[2]
+
+    with raises(IndexError):
+        path2[3]
 
 
 def test_energies(path1, path2):

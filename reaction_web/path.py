@@ -43,6 +43,12 @@ class Path:
         """
         yield from self.reactions
 
+    def __getitem__(self, idx: int) -> Reaction:
+        """
+        Index into the reactions
+        """
+        return self.reactions[idx]
+
     def min(self) -> tuple[int, float]:
         """
         Index and value of the minimum achieved along path
