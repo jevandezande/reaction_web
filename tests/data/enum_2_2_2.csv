@@ -1,0 +1,17 @@
+name, step, r1, r2, r3, energy
+A,       1,  H,  H,  H,      1
+B,       2,  H,  H,  H,      2
+A,       1,  H,  H,  I,      1
+B,       2,  H,  H,  I,      2
+A,       1,  H,  C,  H,      1
+B,       2,  H,  C,  H,      2
+A,       1,  H,  C,  I,      1
+B,       2,  H,  C,  I,      2
+A,       1,  B,  H,  H,      1
+B,       2,  B,  H,  H,      2
+A,       1,  B,  H,  I,      1
+B,       2,  B,  H,  I,      2
+A,       1,  B,  C,  H,      1
+B,       2,  B,  C,  H,      2
+A,       1,  B,  C,  I,      1
+B,       2,  B,  C,  I,      2

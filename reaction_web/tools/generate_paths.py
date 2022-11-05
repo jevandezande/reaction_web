@@ -1,10 +1,32 @@
+from itertools import product
 from typing import Sequence
 
 import more_itertools as mit
+import numpy as np
 import pandas as pd
 from natsort import natsorted
 
-from .. import Molecule, Path, Reaction
+from .. import Enumeration, Molecule, Path, Reaction
+
+
+def enumeration_factory(
+    infile: str,
+    energy: str = "energy",
+    name: str = "name",
+    path_indicators: Sequence[str] | str = "r-groups",
+    **csv_kwargs,
+) -> Enumeration:
+    paths_dict, pi_dict = read_multipath_csv(infile, energy=energy)
+
+    shape = tuple(len(vals) for vals in pi_dict.values())
+    paths = np.zeros(shape, dtype=object)
+    for values, idxs in zip(
+        product(*pi_dict.values()),
+        product(*map(range, shape)),
+    ):
+        paths[idxs] = paths_dict[values]
+
+    return Enumeration(paths, pi_dict)
 
 
 def read_csv(infile: str, energy: str = "energy", name: str = "name", **csv_kwargs) -> list[Molecule]:
@@ -28,9 +50,9 @@ def read_multipath_csv(
     infile: str,
     energy: str = "energy",
     name: str = "name",
-    paths: Sequence[str] | str = "r-groups",
+    path_indicators: Sequence[str] | str = "r-groups",
     **csv_kwargs,
-) -> dict[str, Path]:
+) -> tuple[dict[tuple[str, ...], Path], dict[str, tuple[str, ...]]]:
     """
     Read molecule data in a CSV and convert into paths
 
@@ -40,32 +62,35 @@ def read_multipath_csv(
     :param infile: file to read
     :param energy: column to use for molecule energy
     :param name: column to use for molecule name
+    :param path_indicators: columns that indicate paths
     :param csv_kwargs: parameters for csv parsing
-    :return: Paths generated from data
+    :return: Paths generated from data and the unique values seen in each path_indicator column
     """
     csv_kwargs = {"skipinitialspace": True} | csv_kwargs
     df = pd.read_csv(infile, **csv_kwargs)
     df.rename(columns={energy: "energy", name: "name"}, inplace=True)
     df = df.convert_dtypes(infer_objects=True)
 
-    if paths == "r-groups":
-        paths = find_r_groups(df)
+    if path_indicators == "r-groups":
+        path_indicators = find_r_groups(df)
     else:
-        for path in paths:
-            assert path in df.columns
-    df.sort_values(list(paths) + ["step"], inplace=True)
+        for indicator in path_indicators:
+            assert indicator in df.columns
+    df.sort_values(list(path_indicators) + ["step"], inplace=True)
 
-    return read_paths(df, paths)
+    paths = read_paths(df, path_indicators)
+    pi_dict = {indicator: tuple(df[indicator].unique()) for indicator in path_indicators}
+
+    return paths, pi_dict
 
 
-def read_paths(df: pd.DataFrame, paths: Sequence[str]) -> dict[str, Path]:
+def read_paths(df: pd.DataFrame, path_indicators: Sequence[str]) -> dict[tuple[str, ...], Path]:
     """
     Read data into separate paths, named by the group
     """
     return {
-        str(r_group): pathify(path_data, str(r_group))  # keep open
-        for r_group, path_data in df.groupby(paths)  # keep open
-    }
+        names: pathify(path_data, str(names)) for names, path_data in df.groupby(path_indicators)
+    }  # keep open  # keep open
 
 
 def pathify(data: pd.DataFrame, name: str = "") -> Path:
@@ -79,7 +104,7 @@ def pathify(data: pd.DataFrame, name: str = "") -> Path:
     :param name: Name for the Path
     """
     molecules = [Molecule(name, energy) for name, energy in zip(data["name"], data["energy"])]
-    reactions = [Reaction([reactant], [product]) for reactant, product in mit.windowed(molecules, 2)]
+    reactions = [Reaction([reactant], [product]) for reactant, product in mit.windowed(molecules, 2)]  # type:ignore
     return Path(reactions, name)
 
 
