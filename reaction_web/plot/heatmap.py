@@ -2,8 +2,9 @@ from typing import Callable, Optional, Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.gridspec import GridSpec
 
-from .. import Path, Web, translate
+from .. import Enumeration, Path, Web, translate
 from .._typing import PLOT
 
 
@@ -308,3 +309,95 @@ def heatmap_webs_relative_step(
     return heatmap_webs_function(
         webs, path_relative_step, title, plot, xtickslabels, ytickslabels, rotate_ylabels, showvals, cmap
     )
+
+
+def heatmap_enumeration_function(
+    enm: Enumeration,
+    function: Callable[[Path], float],
+    title: str = "",
+    plot: PLOT | None = None,
+    showvals: bool = False,
+    cmap="coolwarm",
+) -> PLOT:
+    """
+    Generate heatmap from a value in each Path in the Enumeration
+
+    :param enumeration: Enumeration to plot
+    :param title: title for plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
+    :param showvals: show cell values on the heatmap
+    :param cmap: colormap for heatmap
+    """
+    fig, axes = plot or gen_subplots(enm.shape[:-2])
+
+    if title:
+        fig.suptitle(title)
+
+    if enm.ndim == 1:
+        n_heatmaps, m, n = 1, enm.shape[0], 1  # pretend it is 1 x m x 1 in shape
+    else:
+        assert axes.shape == enm.shape[:-2]
+        *head, m, n = enm.shape
+        n_heatmaps = int(np.prod(head))  # np.prod returns 1.0 for an empty iterable
+
+    data_l_m_n = np.fromiter(map(function, enm.paths.flat), dtype=float).reshape(n_heatmaps, m, n)
+    vmin = data_l_m_n.min()
+    vmax = data_l_m_n.max()
+
+    for ax, data in zip(axes.flat, data_l_m_n):
+        ax.imshow(data, cmap, vmin=vmin, vmax=vmax)
+
+        if showvals:
+            for (j, i), val in np.ndenumerate(data):
+                ax.text(i, j, f"{val:.1f}", ha="center", va="center")
+
+    return fig, axes
+
+
+def gen_subplots(
+    shape: Sequence[int],
+    fig: plt.Figure | None = None,
+    gs: GridSpec | None = None,
+) -> PLOT:
+    """
+    Recursively generate subplots
+
+    >>> gen_subplots((2, 3, 4))[1].shape
+    (2, 3, 4)
+
+    Note:
+        The last dimension is always a column dimension.
+        This enforces a landscape view and simplifies integration with heatmaps.
+
+    :param shape: the n-dimensional shape of the subplots
+    :param fig: figure on which to generate the axes
+    :param gs: gridspec on which to recurse (typically only use internally)
+    """
+    fig = fig or plt.figure()
+    ndim = len(shape)
+
+    tail: list[int]
+    row_dim, col_dim, tail = 1, 1, []
+    if ndim == 1:
+        col_dim = shape[0]
+    elif ndim > 1:
+        # If odd, only use first dimension
+        row_dim, col_dim, *tail = (1, *shape) if ndim % 2 else shape
+
+    gs = gs.subgridspec(row_dim, col_dim) if gs else GridSpec(row_dim, col_dim, figure=fig)
+
+    if ndim == 0:
+        return fig, np.array(fig.add_subplot(gs[0]))
+
+    elif ndim % 2:
+        axes = [fig.add_subplot(gs[col]) for col in range(col_dim)]
+        if tail:
+            axes = [gen_subplots(tail, fig, gs[col])[1] for col in range(col_dim)]
+
+    else:
+        axes = [[fig.add_subplot(gs[row, col]) for col in range(col_dim)] for row in range(row_dim)]
+        if tail:
+            axes = [[gen_subplots(tail, fig, gs[row, col])[1] for col in range(col_dim)] for row in range(row_dim)]
+
+    return fig, np.array(axes)

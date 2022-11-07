@@ -68,6 +68,8 @@ def read_multipath_csv(
     """
     csv_kwargs = {"skipinitialspace": True} | csv_kwargs
     df = pd.read_csv(infile, **csv_kwargs)
+    assert energy in df.columns
+    assert name in df.columns
     df.rename(columns={energy: "energy", name: "name"}, inplace=True)
     df = df.convert_dtypes(infer_objects=True)
 

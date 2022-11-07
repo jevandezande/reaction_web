@@ -1,8 +1,16 @@
+import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots
-from pytest import fixture
+from pytest import fixture, mark
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
-from reaction_web.plot.heatmap import heatmap_path, heatmap_web, heatmap_webs_max
+from reaction_web.plot.heatmap import (
+    gen_subplots,
+    heatmap_enumeration_function,
+    heatmap_path,
+    heatmap_web,
+    heatmap_webs_max,
+)
+from reaction_web.tools.generate_paths import enumeration_factory
 
 
 @fixture
@@ -33,6 +41,7 @@ def test_heatmap_path(web):
     heatmap_path(path1, plot=(fig, ax1))
     heatmap_path(path2, plot=(fig, ax2))
     heatmap_path(path3, plot=(fig, ax3))
+    plt.close()
 
 
 def test_heatmap_web(web):
@@ -40,6 +49,7 @@ def test_heatmap_web(web):
     web2 = Web([path2, path3])
 
     heatmap_web(web2)
+    plt.close()
 
 
 def test_heatmap_webs_max(web):
@@ -48,3 +58,30 @@ def test_heatmap_webs_max(web):
     webs = [web, web2]
 
     heatmap_webs_max(webs, xtickslabels=[1, 2, 3], ytickslabels=["A", "B"], showvals=True)
+    plt.close()
+
+
+@mark.parametrize(
+    "shape",
+    [
+        tuple(),
+        (1,),
+        (5,),
+        (2, 3),
+        (1, 1, 1),
+        (2, 3, 4, 1),
+        (3, 1, 2, 4, 5),
+    ],
+)
+def test_gen_subplots(shape):
+    fig, axes = gen_subplots(shape)
+    assert axes.shape == shape
+
+    plt.close()
+
+
+def test_heatmap_enumeration_function():
+    enm = enumeration_factory("tests/data/enum_2_3_2_3_4.csv")
+    fig, ax = heatmap_enumeration_function(enm, lambda path: path.max()[1], showvals=True)
+
+    plt.close()
