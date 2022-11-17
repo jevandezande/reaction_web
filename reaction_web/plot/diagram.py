@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import more_itertools as mit
 import numpy as np
 
-from .. import Path, Web, translate
+from .. import Enumeration, Path, Web, translate
 from .._typing import PLOT
 
 
@@ -145,3 +145,54 @@ def plot_web(
         plot[1].set_title(title)
 
     return fig, axes
+
+
+def plot_enumeration(
+    enm: Enumeration,
+    title: str = "",
+    plot: Optional[PLOT] = None,
+    style: Literal["stacked", "subplots"] = "stacked",
+    spread: float | bool = True,
+    xtickslabels: Optional[Sequence[str]] = None,
+    latexify: bool = True,
+    top_level: bool = True,
+) -> PLOT:
+    """
+    Plot the reaction Paths in a Web.
+
+    :param web: Web to plot
+    :param title: title for the plot
+    :param plot: where to plot the Path
+        e.g. using default canvas (plt) or a subplot (the given axis)
+    :param style: style of plots:
+        stacked: all paths on the same plot
+        subplots: each path in its own subplot
+    :param spread: how much to spread the connecting lines
+    :param xtickslabels: labels for the xticks (replaces numbers)
+    :param latexify: convert names to latex
+    """
+    if not xtickslabels:
+        xtickslabels = list(map(str, range(len(enm) + 1)))
+
+    if style != "stacked":
+        raise NotImplementedError()
+
+    fig, ax = plot or gen_plot(len(enm), title, xtickslabels=xtickslabels)
+
+    if plot and title:
+        plot[1].set_title(title)
+
+    if enm.ndim == 1:
+        for path in enm:
+            assert isinstance(path, Path)
+            plot_path(path, plot=(fig, ax), spread=spread, latexify=latexify)
+    else:
+        for sub_enm in enm:
+            assert isinstance(sub_enm, Enumeration)
+            plot_enumeration(sub_enm, plot=(fig, ax), style=style, spread=spread, latexify=latexify, top_level=False)
+
+    if top_level:
+        ax.set_xlabel("Species")
+        ax.legend()
+
+    return fig, ax

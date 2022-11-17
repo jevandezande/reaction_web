@@ -1,8 +1,10 @@
+import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots
 from pytest import fixture
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
-from reaction_web.plot.diagram import plot_path, plot_web
+from reaction_web.plot.diagram import plot_enumeration, plot_path, plot_web
+from reaction_web.tools.generate_paths import enumeration_factory
 
 
 @fixture
@@ -25,14 +27,29 @@ def web():
     return Web([path1, path2, path3])
 
 
+@fixture
+def enm():
+    return enumeration_factory("tests/data/enum_2_3_2_3_4.csv")
+
+
 def test_plot_path(web):
     path1, path2, path3 = web
     plot_path(path1, plot=subplots())
     plot_path(path2, spread=False, xtickslabels=("R", "TS", "I", "P"))
     plot_path(path3, latexify=False)
 
+    [plt.close() for _ in range(3)]
+
 
 def test_plot_web(web):
     plot_web(web, plot=subplots())
     plot_web(web, style="subplots")
     plot_web(web, style="stacked")
+
+    [plt.close() for _ in range(3)]
+
+
+def test_plot_enumeration(enm):
+    plot_enumeration(enm)
+
+    plt.close()
