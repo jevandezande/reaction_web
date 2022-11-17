@@ -7,27 +7,33 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11']
+        os: [ubuntu-latest]
+
+    name: Python ${{ matrix.os }} ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-python@v4
         with:
-            cache: "poetry"
-            python-version: "3.10"
+          python-version: ${{ matrix.python-version }}
 
-      - run: |
-            pip install pipx
-            pipx install poetry
+      - name: Python Poetry Action
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.2.2
 
       - name: Install dependencies with poetry
-        run: /root/.local/bin/poetry install
+        run: poetry install
 
-      - run: /root/.local/bin/poetry run isort --diff .
-      - run: /root/.local/bin/poetry run black --check .
-      - run: /root/.local/bin/poetry run flake8
-      - run: /root/.local/bin/poetry run mypy
-      - run: /root/.local/bin/poetry run pytest --cov --cov-report=xml
+      - run: poetry run isort --diff .
+      - run: poetry run black --check .
+      - run: poetry run flake8
+      - run: poetry run mypy
+      - run: poetry run pytest --cov --cov-report=xml
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v3
