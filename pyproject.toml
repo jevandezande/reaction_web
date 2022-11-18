@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "reaction_web"
-version = "0.2.0"
+version = "0.3.0"
 description = "Reaction path plotter"
 authors = ["Jonathon Vandezande"]
 keywords = ["chemistry", "reaction", "plotting"]

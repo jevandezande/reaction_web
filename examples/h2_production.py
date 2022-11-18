@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from reaction_web import EReaction, Molecule, Path, Reaction, Web, plot
+from reaction_web import EReaction, Molecule, Path, Reaction, Web, diagram, heatmap
 
 proton = Molecule("H+", 1, 1)
 H = Molecule("H", 0, 2)
@@ -41,7 +41,7 @@ Path 1:
 Energies: {p1.energies}
 """
 )
-_, ax = plot.plot_path(p1)
+_, ax = diagram.plot_path(p1)
 ax.legend()
 plt.show()
 
@@ -55,7 +55,7 @@ Path 2:
 Energies: {p2.energies}
 """
 )
-_, ax = plot.plot_path(p2)
+_, ax = diagram.plot_path(p2)
 ax.legend()
 plt.show()
 
@@ -68,8 +68,8 @@ Web
 {web}
 """
 )
-plot.plot_web(web)
+diagram.plot_web(web)
 plt.show()
 
-plot.heatmap_web(web)
+heatmap.heatmap_web(web)
 plt.show()

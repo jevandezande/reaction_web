@@ -14,7 +14,7 @@ electrochemical reactions. For example, the image below can be generated with th
 ```
 import matplotlib.pyplot as plt
 
-from reaction_web import EReaction, Molecule, Path, Reaction, Web, plot
+from reaction_web import EReaction, Molecule, Path, Reaction, Web, diagram
 
 proton = Molecule("H+", 1, 1)
 H = Molecule("H", 0, 2)
@@ -32,7 +32,7 @@ p1 = Path([r2, r3], "Water Production")
 p2 = Path([r1, r2], "H2 Production")
 
 web = Web([p1, p2])
-plot.plot_web(web)
+diagram.plot_web(web)
 plt.savefig("Water_vs_H2.svg")
 ```
 
