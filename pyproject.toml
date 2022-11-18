@@ -38,7 +38,7 @@ profile = "black"
 line_length = 120
 
 [tool.mypy]
-files = ["reaction_web", "tests"]
+files = ["reaction_web", "examples", "tests"]
 ignore_missing_imports = true
 pretty = true
 
