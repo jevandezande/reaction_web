@@ -42,7 +42,7 @@ files = ["reaction_web", "examples", "tests"]
 ignore_missing_imports = true
 pretty = true
 
-[tool.pytest]
+[tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--doctest-modules"
 doctest_optionflags = "NORMALIZE_WHITESPACE"
