@@ -1,6 +1,6 @@
 from itertools import product
 
-import more_itertools as mit
+from more_itertools import collapse, windowed
 from pytest import fixture, raises
 
 from reaction_web import Enumeration, Path
@@ -15,6 +15,11 @@ def data_enumeration(request):
 @fixture
 def data_2_2_2_enumeration():
     return enumeration_factory("tests/data/enum_2_2_2.csv")
+
+
+@fixture
+def data_2_3_2_3_4_enumeration():
+    return enumeration_factory("tests/data/enum_2_3_2_3_4.csv")
 
 
 def test_Enumeration_repr(data_enumeration):
@@ -95,18 +100,22 @@ def test_Enumeration_getitem(data_enumeration):
 def test_Enumeration_iter(data_enumeration):
     for enum_r1 in data_enumeration:
         for path in enum_r1:
-            for (reactants, products), (name_r, name_p) in zip(path, mit.windowed("ABCD", 2)):
+            for (reactants, products), (name_r, name_p) in zip(path, windowed("ABCD", 2)):
                 assert reactants[0].name == name_r
                 assert products[0].name == name_p
 
 
 def test_Enumeration_iter_2(data_2_2_2_enumeration):
-    for enum_r1 in data_2_2_2_enumeration:
-        for enum_r2 in enum_r1:
-            for path in enum_r2:
-                (reaction,) = path
-                for (molecule,), name in zip(reaction, "AB"):
-                    assert molecule.name == name
+    for path in collapse(data_2_2_2_enumeration, levels=2):
+        for (molecule,), name in zip(path[0], "AB"):
+            assert molecule.name == name
+
+
+def test_Enumeration_iter_3(data_2_3_2_3_4_enumeration):
+    for path in collapse(data_2_3_2_3_4_enumeration, levels=4):
+        for reaction, names in zip(path, windowed("ABCD", 2)):
+            for (molecule,), name in zip(reaction, names):
+                assert molecule.name == name
 
 
 def test_Enumeration_shape(data_enumeration):
