@@ -374,30 +374,24 @@ def gen_subplots(
     :param fig: figure on which to generate the axes
     :param gs: gridspec on which to recurse (typically only use internally)
     """
-    fig = fig or plt.figure()
     ndim = len(shape)
+    fig = fig or plt.figure()
 
-    tail: list[int]
-    row_dim, col_dim, tail = 1, 1, []
-    if ndim == 1:
-        col_dim = shape[0]
-    elif ndim > 1:
-        # If odd, only use first dimension
-        row_dim, col_dim, *tail = (1, *shape) if ndim % 2 else shape
+    if ndim == 0:
+        gs = gs or GridSpec(1, 1, figure=fig)
+        return fig, np.array(fig.add_subplot(gs[0]))
+
+    # If odd, only use first dimension
+    row_dim, col_dim, *tail = (1, *shape) if ndim % 2 else shape
 
     gs = gs.subgridspec(row_dim, col_dim) if gs else GridSpec(row_dim, col_dim, figure=fig)
 
-    if ndim == 0:
-        return fig, np.array(fig.add_subplot(gs[0]))
+    axes = [[fig.add_subplot(gs[row, col]) for col in range(col_dim)] for row in range(row_dim)]
+    if tail:
+        axes = [[gen_subplots(tail, fig, gs[row, col])[1] for col in range(col_dim)] for row in range(row_dim)]
 
-    elif ndim % 2:
-        axes = [fig.add_subplot(gs[col]) for col in range(col_dim)]
-        if tail:
-            axes = [gen_subplots(tail, fig, gs[col])[1] for col in range(col_dim)]
-
-    else:
-        axes = [[fig.add_subplot(gs[row, col]) for col in range(col_dim)] for row in range(row_dim)]
-        if tail:
-            axes = [[gen_subplots(tail, fig, gs[row, col])[1] for col in range(col_dim)] for row in range(row_dim)]
+    # Squeeze the axes (row_dim == 1)
+    if ndim % 2:
+        axes = axes[0]
 
     return fig, np.array(axes)
