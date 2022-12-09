@@ -11,6 +11,7 @@ from reaction_web.plot.heatmap import (
     heatmap_webs_function,
     heatmap_webs_max,
     heatmap_webs_min,
+    heatmap_webs_relative_step,
     heatmap_webs_step,
 )
 from reaction_web.tools.generate_paths import enumeration_factory
@@ -36,6 +37,12 @@ def web():
     return Web([path1, path2, path3])
 
 
+@fixture
+def web_list(web):
+    path1, path2, path3 = web
+    return [web, Web([path2, path3, path1])]
+
+
 def test_heatmap_path(web):
     path1, path2, path3 = web
 
@@ -43,58 +50,47 @@ def test_heatmap_path(web):
 
     heatmap_path(path1, plot=(fig, ax1))
     heatmap_path(path2, plot=(fig, ax2))
-    heatmap_path(path3, plot=(fig, ax3))
+    heatmap_path(path3, plot=(fig, ax3), showvals=True)
     plt.close()
 
 
 def test_heatmap_web(web):
-    path1, path2, path3 = web
+    _, path2, path3 = web
     web2 = Web([path2, path3])
 
     heatmap_web(web2, title="Test", showvals=True)
     plt.close()
 
 
-def test_heatmap_webs_function(web):
-    path1, path2, path3 = web
-    web2 = Web([path2, path3, path1])
-    webs = [web, web2]
-
+def test_heatmap_webs_function(web_list):
     def path_min(path: Path) -> float:
         return path.min()[0]
 
-    heatmap_webs_function(webs, path_min)
+    heatmap_webs_function(web_list, path_min)
     plt.close()
 
 
-def test_heatmap_webs_max(web):
-    path1, path2, path3 = web
-    web2 = Web([path2, path3, path1])
-    web3 = Web([path2, path3])
-    webs = [web, web2]
-
-    heatmap_webs_max(webs, xtickslabels=[1, 2, 3], ytickslabels=["A", "B"], showvals=True)
+def test_heatmap_webs_max(web_list):
+    heatmap_webs_max(web_list, xtickslabels=[1, 2, 3], ytickslabels=["A", "B"], showvals=True)
     plt.close()
 
+    web3 = Web(list(web_list[0])[:2])
     with raises(ValueError):
-        heatmap_webs_max([web, web2, web3])
+        heatmap_webs_max(web_list + [web3])
 
 
-def test_heatmap_webs_min(web):
-    path1, path2, path3 = web
-    web2 = Web([path2, path3, path1])
-    webs = [web, web2]
-
-    heatmap_webs_min(webs)
+def test_heatmap_webs_min(web_list):
+    heatmap_webs_min(web_list)
     plt.close()
 
 
-def test_heatmap_webs_step(web):
-    path1, path2, path3 = web
-    web2 = Web([path2, path3, path1])
-    webs = [web, web2]
+def test_heatmap_webs_step(web_list):
+    heatmap_webs_step(web_list, 1)
+    plt.close()
 
-    heatmap_webs_step(webs, 1)
+
+def test_heatmap_webs_relative_step(web_list):
+    heatmap_webs_relative_step(web_list, 1)
     plt.close()
 
 

@@ -28,8 +28,8 @@ def translate(string: str, to: Literal["latex", "unicode"] = "latex") -> str:
         return LatexConvertor.convert(string)
     elif to == "unicode":
         return UnicodeConvertor.convert(string)
-    else:
-        raise ValueError(f"{to=} is not a supported translation")
+
+    raise ValueError(f"{to=} is not a supported translation")
 
 
 class Convertor(ABC):

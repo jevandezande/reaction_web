@@ -1,4 +1,4 @@
-from pytest import mark
+from pytest import mark, raises
 
 from reaction_web.chem_translate import LatexConvertor, UnicodeConvertor, get_num, translate
 
@@ -35,6 +35,9 @@ def test_get_num(string, num):
 def test_translate(string, latex_str, unicode_str):
     assert translate(string, to="latex") == latex_str
     assert translate(string, to="unicode") == unicode_str
+
+    with raises(ValueError):
+        translate(string, to="html")
 
 
 @mark.parametrize(
