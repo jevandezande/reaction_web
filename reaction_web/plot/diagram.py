@@ -18,7 +18,7 @@ def gen_plot(
     """
     Generates a plot
 
-    :param steps: number of steps
+    :param steps: number of steps (reactions)
     :param xlabel: label for the x-axis
     :param ylabel: label for the y-axis
     :param xtickslabels: labels for the x-ticks
@@ -32,6 +32,7 @@ def gen_plot(
     ax.set_xlabel(xlabel)
 
     if xtickslabels:
+        assert len(xtickslabels) == steps + 1
         ax.set_xticklabels(xtickslabels)
 
     ax.set_ylabel(ylabel)

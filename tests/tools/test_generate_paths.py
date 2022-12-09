@@ -22,7 +22,9 @@ def test_read_csv():
 
 def test_read_multipath_csv():
     e_paths_dict, e_pi_dict = read_multipath_csv("tests/data/enum_2_3.csv", energy="e_energy")
-    g_paths_dict, g_pi_dict = read_multipath_csv("tests/data/enum_2_3.csv", energy="gibbs_energy")
+    g_paths_dict, g_pi_dict = read_multipath_csv(
+        "tests/data/enum_2_3.csv", energy="gibbs_energy", path_indicators=["r1", "r2"]
+    )
 
     assert len(e_paths_dict) == len(g_paths_dict)
     assert e_pi_dict == g_pi_dict

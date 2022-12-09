@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots
-from pytest import fixture, mark
+from pytest import fixture, mark, raises
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
 from reaction_web.plot.heatmap import (
@@ -8,7 +8,10 @@ from reaction_web.plot.heatmap import (
     heatmap_enumeration_function,
     heatmap_path,
     heatmap_web,
+    heatmap_webs_function,
     heatmap_webs_max,
+    heatmap_webs_min,
+    heatmap_webs_step,
 )
 from reaction_web.tools.generate_paths import enumeration_factory
 
@@ -48,16 +51,50 @@ def test_heatmap_web(web):
     path1, path2, path3 = web
     web2 = Web([path2, path3])
 
-    heatmap_web(web2)
+    heatmap_web(web2, title="Test", showvals=True)
+    plt.close()
+
+
+def test_heatmap_webs_function(web):
+    path1, path2, path3 = web
+    web2 = Web([path2, path3, path1])
+    webs = [web, web2]
+
+    def path_min(path: Path) -> float:
+        return path.min()[0]
+
+    heatmap_webs_function(webs, path_min)
     plt.close()
 
 
 def test_heatmap_webs_max(web):
     path1, path2, path3 = web
     web2 = Web([path2, path3, path1])
+    web3 = Web([path2, path3])
     webs = [web, web2]
 
     heatmap_webs_max(webs, xtickslabels=[1, 2, 3], ytickslabels=["A", "B"], showvals=True)
+    plt.close()
+
+    with raises(ValueError):
+        heatmap_webs_max([web, web2, web3])
+
+
+def test_heatmap_webs_min(web):
+    path1, path2, path3 = web
+    web2 = Web([path2, path3, path1])
+    webs = [web, web2]
+
+    heatmap_webs_min(webs)
+    plt.close()
+
+
+def test_heatmap_webs_step(web):
+    path1, path2, path3 = web
+    web2 = Web([path2, path3, path1])
+    webs = [web, web2]
+
+    heatmap_webs_step(webs, 1)
     plt.close()
 
 
