@@ -1,4 +1,4 @@
-from pytest import fixture
+from pytest import fixture, raises
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
 
@@ -57,6 +57,16 @@ b -> c
 c -> d + e
 e -> f + !5.00!"""
     )
+
+
+def test_getitem(web):
+    path0, path1, path2 = web
+    assert web[0] == path0
+    assert web[1] == path1
+    assert web[2] == path2
+
+    with raises(IndexError):
+        web[3]
 
 
 def test_minmax(web):

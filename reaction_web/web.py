@@ -31,6 +31,9 @@ class Web:
     def __str__(self) -> str:
         return f"# {self.name}\n" + "\n\n".join(f"{path.name}:\n{path}" for path in self)
 
+    def __getitem__(self, idx: int) -> Path:
+        return self.paths[idx]
+
     def min(self) -> tuple[tuple[int, int], float]:
         """
         Index and value of the minimum achieved on the web path
