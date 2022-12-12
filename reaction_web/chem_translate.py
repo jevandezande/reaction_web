@@ -74,18 +74,19 @@ class Convertor(ABC):
 
         while string:
             increment = 1
-            if (char := string[0]).isnumeric():
+            char = string[0]
+            if char.isnumeric():
                 number = get_num(string)
                 increment = len(number)
                 out += cls.subscript_number(number)
             elif char == "^":
                 number = get_num(string[1:])
                 increment = len(number) + 2
-                charge = string[len(number) + 1]
-                assert charge in ["-", "+"]
-                out += cls.superscript_number_charge(number, charge)
-            elif char in ["-", "+"]:
-                out += cls.superscript_number_charge("", char)
+                charge_radical = string[len(number) + 1]
+                assert charge_radical in CHARGE_RADICAL
+                out += cls.superscript_number_charge_or_radical(number, charge_radical)
+            elif char in ["-", "+", "."]:
+                out += cls.superscript_number_charge_or_radical("", char)
             else:
                 out += char
 
@@ -100,7 +101,7 @@ class Convertor(ABC):
 
     @classmethod
     @abstractmethod
-    def superscript_number_charge(cls, number: str, charge: str) -> str:
+    def superscript_number_charge_or_radical(cls, number: str, charge_radical: str) -> str:
         ...
 
     @classmethod
@@ -139,15 +140,18 @@ class LatexConvertor(Convertor):
         return f"$_{number}$"
 
     @classmethod
-    def superscript_number_charge(cls, number: str, charge: str) -> str:
+    def superscript_number_charge_or_radical(cls, number: str, charge_radical: str) -> str:
         """
-        Converts a number and charge to superscript
-        >>> LatexConvertor.superscript_number_charge("123", "-")
+        Converts a number and charge/radical to superscript
+        >>> LatexConvertor.superscript_number_charge_or_radical("123", "-")
         '$^{123-}$'
-        >>> LatexConvertor.superscript_number_charge("", "+")
+        >>> LatexConvertor.superscript_number_charge_or_radical("", "+")
         '$^+$'
+        >>> LatexConvertor.superscript_number_charge_or_radical("2", ".")
+        '$^{2\\\\cdot}$'
         """
-        return f"$^{{{number}{charge}}}$" if number else f"$^{charge}$"
+        charge_radical = charge_radical if charge_radical != "." else "\\cdot"
+        return f"$^{{{number}{charge_radical}}}$" if number else f"$^{charge_radical}$"
 
     @classmethod
     def cdot(cls) -> str:
@@ -171,16 +175,20 @@ class UnicodeConvertor(Convertor):
         return str.translate(number, UNICODE_SUBSCRIPT_TRANSLATION)
 
     @classmethod
-    def superscript_number_charge(cls, number: str, charge: str) -> str:
+    def superscript_number_charge_or_radical(cls, number: str, charge_radical: str) -> str:
         """
-        Converts a number and charge to superscript
-        >>> UnicodeConvertor.superscript_number_charge("123", "-")
+        Converts a number and charge or radical to superscript.
+
+        Note: there is no superscript dot in Unicode, thus a middle dot is used.
+        >>> UnicodeConvertor.superscript_number_charge_or_radical("123", "-")
         '¹²³⁻'
-        >>> UnicodeConvertor.superscript_number_charge("", "+")
+        >>> UnicodeConvertor.superscript_number_charge_or_radical("", "+")
         '⁺'
+        >>> UnicodeConvertor.superscript_number_charge_or_radical("2", ".")
+        '²·'
         """
         out = str.translate(number, UNICODE_SUPERSCRIPT_TRANSLATION) if number else ""
-        return out + str.translate(charge, UNICODE_CHARGES_TRANSLATION)
+        return out + str.translate(charge_radical, UNICODE_CHARGE_RADICAL_TRANSLATION)
 
     @classmethod
     def cdot(cls) -> str:
@@ -189,4 +197,5 @@ class UnicodeConvertor(Convertor):
 
 UNICODE_SUPERSCRIPT_TRANSLATION = {ord(str(i)): v for i, v in enumerate("⁰¹²³⁴⁵⁶⁷⁸⁹")}
 UNICODE_SUBSCRIPT_TRANSLATION = {ord(str(i)): v for i, v in enumerate("₀₁₂₃₄₅₆₇₈₉")}
-UNICODE_CHARGES_TRANSLATION = {ord("+"): "⁺", ord("-"): "⁻"}
+UNICODE_CHARGE_RADICAL_TRANSLATION = {ord("+"): "⁺", ord("-"): "⁻", ord("."): "·"}
+CHARGE_RADICAL = ["-", "+", "."]

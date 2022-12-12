@@ -61,6 +61,7 @@ def test_Convertor(string, latex_str, unicode_str):
         ("H2O", "H$_2$O", "H₂O"),
         ("(NH4)(PO4)^2-", "(NH$_4$)(PO$_4$)$^{2-}$", "(NH₄)(PO₄)²⁻"),
         ("(MgO2)2(PbCl32)3^2-", "(MgO$_2$)$_2$(PbCl$_32$)$_3^{2-}$", "(MgO₂)₂(PbCl₃₂)₃²⁻"),
+        ("OH.", "OH$^\\cdot$", "OH·"),
     ],
 )
 def test_mol_convertor(mol, latex_mol, unicode_mol):
