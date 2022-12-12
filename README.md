@@ -38,7 +38,7 @@ plt.savefig("Water_vs_H2.svg")
 
 ![Example image of water vs H2 production](media/Water_vs_H2.svg)
 
-See [example.py](example.py) for usage.
+See [examples/h2_production.py](examples/h2_production.py) for usage.
 
 
 Contributions
