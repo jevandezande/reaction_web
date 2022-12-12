@@ -21,9 +21,9 @@ def test_get_num(string, num):
     "string, latex_str, unicode_str",
     [
         (
-            "H2O -> H+ + OH-",
-            "H$_2$O -> H$^+$ + OH$^-$",
-            "H₂O -> H⁺ + OH⁻",
+            "2H2O -> H3O+ + OH-",
+            "2$\\cdot$H$_2$O -> H$_3$O$^+$ + OH$^-$",
+            "2·H₂O -> H₃O⁺ + OH⁻",
         ),
         (
             "H2O + NH3 -> OH- + NH4+",

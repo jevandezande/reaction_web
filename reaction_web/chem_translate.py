@@ -59,17 +59,17 @@ class Convertor(ABC):
         Converts a molecular formula to the desired format
         >>> LatexConvertor.mol_convertor("H2O")
         'H$_2$O'
-        >>> LatexConvertor.mol_convertor("(NH4)(PO4)^2-")
-        '(NH$_4$)(PO$_4$)$^{2-}$'
-        >>> LatexConvertor.mol_convertor("(MgO2)2(PbCl32)3^2-")
-        '(MgO$_2$)$_2$(PbCl$_32$)$_3^{2-}$'
+        >>> LatexConvertor.mol_convertor("2(NH4)(PO4)^2-")
+        '2$\\\\cdot$(NH$_4$)(PO$_4$)$^{2-}$'
+        >>> UnicodeConvertor.mol_convertor("3(MgO2)2(PbCl32)3^2-")
+        '3·(MgO₂)₂(PbCl₃₂)₃²⁻'
         """
         out = ""
 
         # Leading number: stoichiometric ratio
         if string[0].isnumeric():
             number = get_num(string)
-            out += f"{number}$\\cdot$"
+            out += number + cls.cdot()  # type: ignore
             string = string[len(number) :]
 
         while string:
@@ -96,12 +96,17 @@ class Convertor(ABC):
     @classmethod
     @abstractmethod
     def subscript_number(cls, number: str) -> str:
-        pass
+        ...
 
     @classmethod
     @abstractmethod
     def superscript_number_charge(cls, number: str, charge: str) -> str:
-        pass
+        ...
+
+    @classmethod
+    @abstractmethod
+    def cdot(cls) -> str:
+        ...
 
     @classmethod
     def finalize(cls, string: str) -> str:
@@ -144,6 +149,10 @@ class LatexConvertor(Convertor):
         """
         return f"$^{{{number}{charge}}}$" if number else f"$^{charge}$"
 
+    @classmethod
+    def cdot(cls) -> str:
+        return "$\\cdot$"
+
 
 class UnicodeConvertor(Convertor):
     """
@@ -172,6 +181,10 @@ class UnicodeConvertor(Convertor):
         """
         out = str.translate(number, UNICODE_SUPERSCRIPT_TRANSLATION) if number else ""
         return out + str.translate(charge, UNICODE_CHARGES_TRANSLATION)
+
+    @classmethod
+    def cdot(cls) -> str:
+        return "·"
 
 
 UNICODE_SUPERSCRIPT_TRANSLATION = {ord(str(i)): v for i, v in enumerate("⁰¹²³⁴⁵⁶⁷⁸⁹")}
