@@ -3,7 +3,7 @@ Reaction Web
 
 [![License](https://img.shields.io/github/license/jevandezande/reaction_web)](https://github.com/jevandezande/reaction_web/blob/master/LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jevandezande/reaction_web/Test)](https://github.com/jevandezande/reaction_web/actions/)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jevandezande/reaction_web/test.yml?branch=master)](https://github.com/jevandezande/reaction_web/actions/)
 [![Codecov](https://img.shields.io/codecov/c/github/jevandezande/reaction_web)](https://codecov.io/gh/jevandezande/reaction_web)
 
 Chemical pathways often have a number of branches, but they are fundamentally a
