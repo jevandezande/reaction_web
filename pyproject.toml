@@ -17,7 +17,7 @@ natsort = "*"
 numpy = "*"
 
 [tool.poetry.group.dev.dependencies]
-black = "==22.10"
+black = "==23.1"
 flake8 = "*"
 isort = "*"
 mypy = "*"
