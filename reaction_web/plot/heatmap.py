@@ -3,18 +3,20 @@ from typing import Callable, Optional, Sequence
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.gridspec import GridSpec
+from numpy.typing import NDArray
 
 from .. import Enumeration, Path, Web, translate
-from .._typing import PLOT
+from .._typing import PLOT, Axes, Figure
 
 
 def gen_heatmap_plot(
-    title: str = "",
-    xlabel: str = "",
-    ylabel: str = "",
+    title: str | None = None,
+    xlabel: str | None = None,
+    ylabel: str | None = None,
     xtickslabels: Optional[Sequence[str]] = None,
     ytickslabels: Optional[Sequence[str]] = None,
     rotate_ylabels: bool = False,
+    plot: PLOT | None = None,
 ) -> PLOT:
     """
     Generates a heatmap plot
@@ -24,13 +26,15 @@ def gen_heatmap_plot(
     :param xtickslabels, ytickslabels: labels to the x-ticks, y-ticks
     :param rotate_ylabels: rotate labels on y-axis
     """
-    fig, ax = plt.subplots()
+    fig, ax = plot or plt.subplots()
 
-    if title:
+    if title is not None:
         fig.suptitle(title)
 
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
+    if xlabel is not None:
+        ax.set_xlabel(xlabel)
+    if ylabel is not None:
+        ax.set_ylabel(ylabel)
 
     if xtickslabels:
         ax.set_xticks(np.arange(len(xtickslabels)), xtickslabels)
@@ -329,7 +333,8 @@ def heatmap_enumeration_function(
     :param showvals: show cell values on the heatmap
     :param cmap: colormap for heatmap
     """
-    fig, axes = plot or gen_subplots(enm.shape[:-2])
+    labels = list(enm.path_names.values())
+    fig, axes = plot or gen_subplots(enm.shape[:-2], labels=labels[:-2])[:2]
 
     if title:
         fig.suptitle(title)
@@ -346,6 +351,7 @@ def heatmap_enumeration_function(
     vmax = data_l_m_n.max()
 
     for ax, data in zip(axes.flat, data_l_m_n):
+        gen_heatmap_plot(xtickslabels=labels[-1], ytickslabels=labels[-2], plot=(fig, ax))
         ax.imshow(data, cmap, vmin=vmin, vmax=vmax)
 
         if showvals:
@@ -357,9 +363,10 @@ def heatmap_enumeration_function(
 
 def gen_subplots(
     shape: Sequence[int],
-    fig: plt.Figure | None = None,
+    fig: Figure | None = None,
     gs: GridSpec | None = None,
-) -> PLOT:
+    labels: Sequence[Sequence[str]] | None = None,
+) -> tuple[Figure, Axes, NDArray[GridSpec]]:
     """
     Recursively generate subplots
 
@@ -373,25 +380,82 @@ def gen_subplots(
     :param shape: the n-dimensional shape of the subplots
     :param fig: figure on which to generate the axes
     :param gs: gridspec on which to recurse (typically only use internally)
+    :param labels: labels for the axes (matching the dimensions of shape)
     """
+    # Sanity check
+    if labels:
+        assert all(s == len(ls) for s, ls in zip(shape, labels))
+
     ndim = len(shape)
     fig = fig or plt.figure()
 
+    # Base of recursion
     if ndim == 0:
         gs = gs or GridSpec(1, 1, figure=fig)
-        return fig, np.array(fig.add_subplot(gs[0]))
+        ax = fig.add_subplot(gs[0])
+        return fig, np.array(ax), np.array([gs])
 
-    # If odd, only use first dimension
-    row_dim, col_dim, *tail = (1, *shape) if ndim % 2 else shape
+    # If odd, add a shim dimension
+    if ndim % 2:
+        if labels:
+            labels = [[""]] + list(labels)
+        row_dim, col_dim, *tail = (1, *shape)
+    else:
+        row_dim, col_dim, *tail = shape
 
     gs = gs.subgridspec(row_dim, col_dim) if gs else GridSpec(row_dim, col_dim, figure=fig)
 
-    axes = [[fig.add_subplot(gs[row, col]) for col in range(col_dim)] for row in range(row_dim)]
-    if tail:
-        axes = [[gen_subplots(tail, fig, gs[row, col])[1] for col in range(col_dim)] for row in range(row_dim)]
+    # Generate subplots
+    axes = np.array([
+        [
+            fig.add_subplot(gs[row, col])
+            for col in range(col_dim)
+        ]
+        for row in range(row_dim)
+    ])  # fmt:skip
 
-    # Squeeze the axes (row_dim == 1)
+    # ylabel on leftmost and xlabel on bottommost
+    if labels:
+        for ax, ylabel in zip(axes[:, 0], labels[0]):
+            ax.set_ylabel(ylabel)
+        for ax, xlabel in zip(axes[-1], labels[1]):
+            ax.set_xlabel(xlabel)
+
+    # Recurse
+    if tail:
+        new_axes: list[list[Axes]] = []
+        new_gs: list[list[GridSpec]] = []
+        sub_labels = labels[2:] if labels else None
+
+        for row, ax_row in enumerate(axes):
+            new_axes.append([])
+            new_gs.append([])
+
+            for col, ax in enumerate(ax_row):
+                remove_frame(ax)
+
+                _, sub_axes, sub_gs = gen_subplots(tail, fig, gs[row, col], sub_labels)
+
+                new_axes[-1].append(sub_axes)
+                new_gs[-1].append(sub_gs)
+
+        axes = np.array(new_axes)
+        gs = np.array(new_gs)
+
+    # Squeeze, since row_dim == 1 in odd cases
     if ndim % 2:
         axes = axes[0]
+        gs = gs[0]
 
-    return fig, np.array(axes)
+    return fig, axes, gs
+
+
+def remove_frame(ax: Axes) -> None:
+    """
+    Remove frame and ticks from axis
+
+    :ax: Axes from which to remove stuff
+    """
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_frame_on(False)

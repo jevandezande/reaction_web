@@ -107,7 +107,26 @@ def test_heatmap_webs_relative_step(web_list):
     ],
 )
 def test_gen_subplots(shape):
-    fig, axes = gen_subplots(shape)
+    fig, axes, gs = gen_subplots(shape)
+    assert axes.shape == shape
+
+    plt.close()
+
+
+@mark.parametrize(
+    "shape,labels",
+    [
+        [tuple(), None],
+        [(1,), (("A",),)],
+        [(5,), ("ABCDE",)],
+        [(2, 3), (("A", "B"), ("C", "C", "C"))],
+        [(1, 1, 1), ("A", "B", "C")],
+        [(2, 3, 4, 1), ("AB", "CDE", "FGHI", "K")],
+        [(3, 1, 2, 4, 5), ("ABC", "D", "EF", "GHIJ", "KLMNO")],
+    ],
+)
+def test_gen_subplots_labels(shape, labels):
+    fig, axes, gs = gen_subplots(shape, labels=labels)
     assert axes.shape == shape
 
     plt.close()
