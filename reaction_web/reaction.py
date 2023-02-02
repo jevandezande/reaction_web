@@ -17,7 +17,10 @@ class Reaction:
         """
         Reaction equation string
         """
-        display = lambda mols: " + ".join(map(lambda x: x.name, mols))
+
+        def display(mols):
+            return " + ".join(map(lambda x: x.name, mols))
+
         return f"{display(self.reactants)} -> {display(self.products)}"
 
     def __iter__(self) -> Iterator[Sequence[Molecule]]:

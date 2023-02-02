@@ -18,10 +18,9 @@ numpy = "*"
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.1"
-flake8 = "*"
-isort = "*"
 mypy = "*"
 pre-commit = "*"
+ruff = "*"
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
@@ -31,11 +30,16 @@ pytest-cov = "*"
 
 [tool.black]
 line-length = 120
-target-version = ["py310"]
+target-version = ["py311"]
 
-[tool.isort]
-profile = "black"
-line_length = 120
+[tool.ruff]
+line-length = 120
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+]
 
 [tool.mypy]
 files = ["reaction_web", "examples", "tests"]
