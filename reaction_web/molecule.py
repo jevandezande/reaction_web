@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -10,7 +9,7 @@ class Molecule:
 
     name: str
     energy: float
-    multiplicity: Optional[int] = None
+    multiplicity: int | None = None
 
     def __repr__(self) -> str:
         return f"<{self.name} {self.energy:7.4f}>"

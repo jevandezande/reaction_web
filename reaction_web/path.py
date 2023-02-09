@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Iterable, Iterator, Optional, Sequence
+from typing import Iterable, Iterator, Sequence
 
 import numpy as np
 
@@ -14,7 +14,7 @@ class Path:
 
     reactions: Sequence[Reaction]
     name: str = ""
-    step_sizes: Optional[Iterable[float]] = None
+    step_sizes: Iterable[float] | None = None
     steps: np.ndarray = field(init=False)
 
     def __post_init__(self):

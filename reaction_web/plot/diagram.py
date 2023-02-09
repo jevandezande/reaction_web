@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Sequence
+from typing import Literal, Sequence
 
 import matplotlib.pyplot as plt
 import more_itertools as mit
@@ -13,7 +13,7 @@ def gen_plot(
     title: str = "",
     xlabel: str = "Species",
     ylabel: str = "Energy",
-    xtickslabels: Optional[Sequence[str]] = None,
+    xtickslabels: Sequence[str] | None = None,
 ) -> PLOT:
     """
     Generates a plot
@@ -43,9 +43,9 @@ def gen_plot(
 def plot_path(
     path: Path,
     title: str = "",
-    plot: Optional[PLOT] = None,
+    plot: PLOT | None = None,
     spread: float | bool = True,
-    xtickslabels: Optional[Sequence[str]] = None,
+    xtickslabels: Sequence[str] | None = None,
     latexify: bool = True,
 ) -> PLOT:
     """
@@ -86,10 +86,10 @@ def plot_path(
 def plot_web(
     web: Web,
     title: str = "",
-    plot: Optional[PLOT] = None,
+    plot: PLOT | None = None,
     style: Literal["stacked", "subplots"] = "stacked",
     spread: float | bool = True,
-    xtickslabels: Optional[Sequence[str]] = None,
+    xtickslabels: Sequence[str] | None = None,
     latexify: bool = True,
 ) -> PLOT:
     """
@@ -151,10 +151,10 @@ def plot_web(
 def plot_enumeration(
     enm: Enumeration,
     title: str = "",
-    plot: Optional[PLOT] = None,
+    plot: PLOT | None = None,
     style: Literal["stacked", "subplots"] = "stacked",
     spread: float | bool = True,
-    xtickslabels: Optional[Sequence[str]] = None,
+    xtickslabels: Sequence[str] | None = None,
     latexify: bool = True,
     top_level: bool = True,
 ) -> PLOT:
