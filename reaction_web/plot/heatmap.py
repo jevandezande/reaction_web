@@ -204,7 +204,7 @@ def heatmap_webs_max(
     """
 
     def path_max(path: Path) -> float:
-        return path.max()[0]
+        return path.max()[1]
 
     return heatmap_webs_function(
         webs, path_max, title, plot, xtickslabels, ytickslabels, rotate_ylabels, showvals, cmap
@@ -238,7 +238,7 @@ def heatmap_webs_min(
     """
 
     def path_min(path: Path) -> float:
-        return path.min()[0]
+        return path.min()[1]
 
     return heatmap_webs_function(
         webs, path_min, title, plot, xtickslabels, ytickslabels, rotate_ylabels, showvals, cmap
