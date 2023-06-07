@@ -11,4 +11,4 @@ class Molecule:
     energy: float
 
     def __repr__(self) -> str:
-        return f"<{self.name} {self.energy:7.4f}>"
+        return f"<Mol {self.name} {self.energy:7.4f}>"
