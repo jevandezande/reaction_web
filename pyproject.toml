@@ -47,7 +47,7 @@ ignore_missing_imports = true
 pretty = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "reaction_web"]
 addopts = "--doctest-modules"
 doctest_optionflags = "NORMALIZE_WHITESPACE"
 markers = [ "graphical: marks tests as graphical (typically slow)" ]
