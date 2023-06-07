@@ -36,7 +36,7 @@ def enm():
 
 def test_gen_plot():
     gen_plot(3, title="Test", xtickslabels=["A", "B", "C", "D"])
-    plt.close()
+    plt.close("all")
 
 
 def test_plot_path(web):
@@ -45,7 +45,7 @@ def test_plot_path(web):
     plot_path(path2, spread=False, xtickslabels=("R", "TS", "I", "P"))
     plot_path(path3, latexify=False)
 
-    [plt.close() for _ in range(3)]
+    plt.close("all")
 
 
 def test_plot_web(web):
@@ -53,10 +53,9 @@ def test_plot_web(web):
     plot_web(web, style="subplots")
     plot_web(web, title="Web Plot", plot=plot, style="stacked")
 
-    [plt.close() for _ in range(2)]
+    plt.close("all")
 
 
 def test_plot_enumeration(enm):
     plot_enumeration(enm, title="Enumeration Plot")
-
-    plt.close()
+    plt.close("all")
