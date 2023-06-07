@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots
-from pytest import fixture
+from pytest import fixture, mark
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
 from reaction_web.plot.diagram import gen_plot, plot_enumeration, plot_path, plot_web
 from reaction_web.tools.generate_paths import enumeration_factory
+
+pytestmark = mark.graphical
 
 
 @fixture

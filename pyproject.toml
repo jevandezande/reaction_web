@@ -50,6 +50,7 @@ pretty = true
 testpaths = ["tests"]
 addopts = "--doctest-modules"
 doctest_optionflags = "NORMALIZE_WHITESPACE"
+markers = [ "graphical: marks tests as graphical (typically slow)" ]
 
 [build-system]
 requires = ["poetry-core"]

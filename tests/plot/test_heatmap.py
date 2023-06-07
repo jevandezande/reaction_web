@@ -16,6 +16,8 @@ from reaction_web.plot.heatmap import (
 )
 from reaction_web.tools.generate_paths import enumeration_factory
 
+pytestmark = mark.graphical
+
 
 @fixture
 def web():
