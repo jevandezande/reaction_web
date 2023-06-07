@@ -91,8 +91,9 @@ def read_paths(df: pd.DataFrame, path_indicators: Sequence[str]) -> dict[tuple[s
     Read data into separate paths, named by the group
     """
     return {
-        names: pathify(path_data, str(names)) for names, path_data in df.groupby(path_indicators)
-    }  # keep open  # keep open
+        names: pathify(path_data, str(names))  # keep open
+        for names, path_data in df.groupby(list(path_indicators))  # keep open
+    }
 
 
 def pathify(data: pd.DataFrame, name: str = "") -> Path:
