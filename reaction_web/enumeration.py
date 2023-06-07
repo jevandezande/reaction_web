@@ -46,16 +46,6 @@ class Enumeration:
             out += f"\n{path_name}: {sub}\n{enm_str}\n"
         return out.strip()
 
-        # TODO: Add TypeGuards
-
-    #         return f"Enumeration {self.path_names}\n" + "\n".join(
-    #             f"""
-    # {path_name}: {sub}
-    # Enumeration {enm.path_names}
-    # {enm}"""
-    #             for enm, sub in zip(self, subs)
-    #         )
-
     def __len__(self) -> int:
         """
         Length of the 0-th dimension of the Enumeration
@@ -76,7 +66,7 @@ class Enumeration:
 
         return Enumeration(item, dict(tail)) if tail else item
 
-    def __iter__(self) -> Iterator[Enumeration | Path]:
+    def __iter__(self) -> Iterator[Enumeration] | Iterator[Path]:
         if self.ndim == 1:
             yield from self.paths  # Iterator[Path]
         else:

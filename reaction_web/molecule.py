@@ -9,7 +9,6 @@ class Molecule:
 
     name: str
     energy: float
-    multiplicity: int | None = None
 
     def __repr__(self) -> str:
         return f"<{self.name} {self.energy:7.4f}>"
