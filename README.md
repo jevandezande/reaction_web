@@ -16,11 +16,11 @@ import matplotlib.pyplot as plt
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web, diagram
 
-proton = Molecule("H+", 1, 1)
-H = Molecule("H", 0, 2)
-H2 = Molecule("H2", -1, 1)
-O = Molecule("O", 0, 3)
-H2O = Molecule("H2O", -2, 1)
+proton = Molecule("H+", 1)
+H = Molecule("H", 0)
+H2 = Molecule("H2", -1)
+O = Molecule("O", 0)
+H2O = Molecule("H2O", -2)
 
 r1 = EReaction([proton], [H], ne=1, ref_pot=-1.5)
 r2 = Reaction([H] * 2, [H2])
