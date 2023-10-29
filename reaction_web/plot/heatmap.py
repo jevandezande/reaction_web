@@ -342,7 +342,7 @@ def heatmap_enumeration_function(
     if enm.ndim == 1:
         n_heatmaps, m, n = 1, enm.shape[0], 1  # pretend it is 1 x m x 1 in shape
     else:
-        assert axes.shape == enm.shape[:-2]
+        assert axes.shape == enm.shape[:-2]  # type: ignore
         *head, m, n = enm.shape
         n_heatmaps = int(np.prod(head))  # np.prod returns 1.0 for an empty iterable
 
@@ -350,7 +350,7 @@ def heatmap_enumeration_function(
     vmin = data_l_m_n.min()
     vmax = data_l_m_n.max()
 
-    for ax, data in zip(axes.flat, data_l_m_n):
+    for ax, data in zip(axes.flat, data_l_m_n):  # type: ignore
         gen_heatmap_plot(xtickslabels=labels[-1], ytickslabels=labels[-2], plot=(fig, ax))
         ax.imshow(data, cmap, vmin=vmin, vmax=vmax)
 
@@ -366,7 +366,7 @@ def gen_subplots(
     fig: Figure | None = None,
     gs: GridSpec | None = None,
     labels: Sequence[Sequence[str]] | None = None,
-) -> tuple[Figure, Axes, NDArray[GridSpec]]:
+) -> tuple[Figure, Axes, NDArray[GridSpec]]:  # type: ignore
     """
     Recursively generate subplots
 
@@ -393,7 +393,7 @@ def gen_subplots(
     if ndim == 0:
         gs = gs or GridSpec(1, 1, figure=fig)
         ax = fig.add_subplot(gs[0])
-        return fig, np.array(ax), np.array([gs])
+        return fig, np.array(ax), np.array([gs])  # type: ignore
 
     # If odd, add a shim dimension
     if ndim % 2:
@@ -403,7 +403,7 @@ def gen_subplots(
     else:
         row_dim, col_dim, *tail = shape
 
-    gs = gs.subgridspec(row_dim, col_dim) if gs else GridSpec(row_dim, col_dim, figure=fig)
+    gs = gs.subgridspec(row_dim, col_dim) if gs else GridSpec(row_dim, col_dim, figure=fig)  # type: ignore
 
     # Generate subplots
     axes = np.array([
@@ -434,20 +434,20 @@ def gen_subplots(
             for col, ax in enumerate(ax_row):
                 remove_frame(ax)
 
-                _, sub_axes, sub_gs = gen_subplots(tail, fig, gs[row, col], sub_labels)
+                _, sub_axes, sub_gs = gen_subplots(tail, fig, gs[row, col], sub_labels)  # type: ignore
 
                 new_axes[-1].append(sub_axes)
-                new_gs[-1].append(sub_gs)
+                new_gs[-1].append(sub_gs)  # type: ignore
 
         axes = np.array(new_axes)
-        gs = np.array(new_gs)
+        gs = np.array(new_gs)  # type: ignore
 
     # Squeeze, since row_dim == 1 in odd cases
     if ndim % 2:
         axes = axes[0]
-        gs = gs[0]
+        gs = gs[0]  # type: ignore
 
-    return fig, axes, gs
+    return fig, axes, gs  # type: ignore
 
 
 def remove_frame(ax: Axes) -> None:

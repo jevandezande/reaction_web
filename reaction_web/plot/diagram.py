@@ -125,7 +125,7 @@ def plot_web(
             if title:
                 fig.suptitle(title)
 
-            axes_flat = list(mit.collapse(axes))
+            axes_flat = list(mit.collapse(axes))  # type: ignore
 
             axes_flat[0].set_xticks(np.arange(max_len + 1))
             if xtickslabels:

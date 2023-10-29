@@ -40,7 +40,8 @@ def read_csv(infile: str, energy: str = "energy", name: str = "name", **csv_kwar
     :return: Molecules generated from data
     """
     csv_kwargs = {"skipinitialspace": True} | csv_kwargs
-    df = pd.read_csv(infile, **csv_kwargs)
+    df = pd.read_csv(infile, **csv_kwargs)  # type: ignore
+    assert isinstance(df, pd.DataFrame)
     df = df.convert_dtypes(infer_objects=True)
 
     return [Molecule(data[name], data[energy]) for _, data in df.iterrows()]
@@ -67,7 +68,8 @@ def read_multipath_csv(
     :return: Paths generated from data and the unique values seen in each path_indicator column
     """
     csv_kwargs = {"skipinitialspace": True} | csv_kwargs
-    df = pd.read_csv(infile, **csv_kwargs)
+    df = pd.read_csv(infile, **csv_kwargs)  # type: ignore
+    assert isinstance(df, pd.DataFrame)
     assert energy in df.columns
     assert name in df.columns
     df.rename(columns={energy: "energy", name: "name"}, inplace=True)
