@@ -9,7 +9,7 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: ['3.11']
+        python-version: ['3.11', '3.12']
         os: [ubuntu-latest]
 
     name: Python ${{ matrix.os }} ${{ matrix.python-version }}
@@ -24,7 +24,7 @@ jobs:
       - name: Python Poetry Action
         uses: abatilo/actions-poetry@v2
         with:
-          poetry-version: 1.6
+          poetry-version: 1.7
 
       - name: Install dependencies with poetry
         run: poetry install
