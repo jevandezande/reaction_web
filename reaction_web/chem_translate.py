@@ -96,18 +96,15 @@ class Convertor(ABC):
 
     @classmethod
     @abstractmethod
-    def subscript_number(cls, number: str) -> str:
-        ...
+    def subscript_number(cls, number: str) -> str: ...
 
     @classmethod
     @abstractmethod
-    def superscript_number_charge_or_radical(cls, number: str, charge_radical: str) -> str:
-        ...
+    def superscript_number_charge_or_radical(cls, number: str, charge_radical: str) -> str: ...
 
     @classmethod
     @abstractmethod
-    def cdot(cls) -> str:
-        ...
+    def cdot(cls) -> str: ...
 
     @classmethod
     def finalize(cls, string: str) -> str:

@@ -9,7 +9,7 @@ readme = "README.md"
 repository = "https://github.com/jevandezande/reaction_web"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 pandas = "*"
 matplotlib = "*"
 more-itertools = "*"
@@ -19,7 +19,7 @@ numpy = "*"
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
 pre-commit = "*"
-ruff = ">=0.2"
+ruff = ">=0.3"
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
