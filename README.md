@@ -2,7 +2,7 @@ Reaction Web
 ============
 
 [![License](https://img.shields.io/github/license/jevandezande/reaction_web)](https://github.com/jevandezande/reaction_web/blob/master/LICENSE)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Code style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jevandezande/reaction_web/test.yml?branch=master)](https://github.com/jevandezande/reaction_web/actions/)
 [![Codecov](https://img.shields.io/codecov/c/github/jevandezande/reaction_web)](https://codecov.io/gh/jevandezande/reaction_web)
 
