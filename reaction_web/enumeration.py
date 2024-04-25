@@ -1,4 +1,4 @@
-from __future__ import annotations
+"""A collection of Paths that all have the same form."""
 
 from dataclasses import dataclass
 from typing import Iterator, Self
@@ -11,9 +11,10 @@ from .path import Path
 @dataclass
 class Enumeration:
     """
-    A collection of reaction paths that all have the same form
+    A collection of Paths that all have the same form.
 
-    :param path_names:
+    :param paths: multi-dimensional array of Paths
+    :param path_names: partial names of the paths (to be constructed by Enumeration)
         {"r1": ("H", "C"), "r2": ("H", "B", "I")}
     """
 
@@ -21,6 +22,7 @@ class Enumeration:
     path_names: dict[str, tuple[str, ...]]
 
     def __post_init__(self):
+        """Ensure that the paths and path_names have the same shape."""
         path_names_shape = tuple(map(len, self.path_names.values()))
         if path_names_shape != self.paths.shape:
             raise ValueError(
@@ -28,12 +30,11 @@ class Enumeration:
             )
 
     def __repr__(self) -> str:
+        """Representation of the Enumeration."""
         return f"<Enumeration {tuple(self.path_names)} {self.shape}>"
 
     def __str__(self) -> str:
-        """
-        Recursively generate a representation of the Enumeration
-        """
+        """Recursively generate a representation of the Enumeration."""
         out = f"Enumeration {self.path_names}\n"
         if self.ndim == 1:  # 1-dimensional array of Paths
             return out + "\n".join(map(repr, self))
@@ -47,14 +48,16 @@ class Enumeration:
         return out.strip()
 
     def __len__(self) -> int:
-        """
-        Length of the 0-th dimension of the Enumeration
-        """
+        """Length of the 0-th dimension of the Enumeration."""
         return len(self.paths)
 
     def __getitem__(self, idx: str | int) -> Self | Path:
         """
-        Get an Enumeration/Path via its path_name (str) or index (int)
+        Get an Enumeration/Path via its path_name (str) or index (int).
+
+        :param idx: path_name (str) or index (int)
+        :return: Enumeration/Path
+        :raises KeyError: if path_name not in Enumeration
         """
         (_, subs), *tail = self.path_names.items()
         if isinstance(idx, str):
@@ -80,8 +83,10 @@ class Enumeration:
 
     @property
     def shape(self) -> tuple[int, ...]:
+        """Shape of the Enumeration."""
         return self.paths.shape
 
     @property
     def ndim(self) -> int:
+        """Number of dimensions of the Enumeration."""
         return self.paths.ndim

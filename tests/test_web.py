@@ -1,10 +1,13 @@
+"""Tests for the Web class."""
+
 from pytest import fixture, raises
 
 from reaction_web import EReaction, Molecule, Path, Reaction, Web
 
 
 @fixture
-def web():
+def web() -> Web:
+    """Make a simple Web with three paths."""
     refp = 5
     a = Molecule("a", 1)
     b = Molecule("b", 0)
@@ -23,20 +26,24 @@ def web():
     return Web([path1, path2, path3], "My Web")
 
 
-def test_iter(web):
+def test_iter(web: Web) -> None:
+    """Test that the Web is iterable."""
     for path, p_original in zip(web, web.paths):
         assert path == p_original
 
 
-def test_len(web):
+def test_len(web: Web) -> None:
+    """Test that the Web has the correct length."""
     assert len(web) == 3
 
 
-def test_repr(web):
+def test_repr(web: Web) -> None:
+    """Test the repr of the Web."""
     assert repr(web) == '<Web "My Web" [P1, P2, ]>'
 
 
-def test_str(web):
+def test_str(web: Web) -> None:
+    """Test the str of the Web."""
     assert (
         str(web)
         == """\
@@ -59,7 +66,8 @@ e -> f + !5.00!"""
     )
 
 
-def test_getitem(web):
+def test_getitem(web: Web) -> None:
+    """Test getting items from the Web."""
     path0, path1, path2 = web
     assert web[0] == path0
     assert web[1] == path1
@@ -69,6 +77,7 @@ def test_getitem(web):
         web[3]
 
 
-def test_minmax(web):
+def test_minmax(web: Web) -> None:
+    """Test the min and max of the Web."""
     assert web.min() == ((0, 4), -6.5)
     assert web.max() == ((1, 1), 2)

@@ -1,11 +1,19 @@
+"""Tests for the generate_paths module."""
+
 import pandas as pd
 from pytest import mark
 
 from reaction_web import Enumeration
-from reaction_web.tools.generate_paths import enumeration_factory, find_r_groups, read_csv, read_multipath_csv
+from reaction_web.tools.generate_paths import (
+    enumeration_factory,
+    find_r_groups,
+    read_csv,
+    read_multipath_csv,
+)
 
 
-def test_read_csv():
+def test_read_csv() -> None:
+    """Test reading a csv file with a single energy column."""
     e_data = read_csv("tests/data/enum_2_3.csv", energy="e_energy")
     g_data = read_csv("tests/data/enum_2_3.csv", energy="gibbs_energy")
 
@@ -20,7 +28,8 @@ def test_read_csv():
     assert len(data2) == 16
 
 
-def test_read_multipath_csv():
+def test_read_multipath_csv() -> None:
+    """Test reading a csv file with multiple paths."""
     e_paths_dict, e_pi_dict = read_multipath_csv("tests/data/enum_2_3.csv", energy="e_energy")
     g_paths_dict, g_pi_dict = read_multipath_csv(
         "tests/data/enum_2_3.csv", energy="gibbs_energy", path_indicators=["r1", "r2"]
@@ -42,21 +51,27 @@ def test_read_multipath_csv():
     assert len(pi_dict) == 3
 
 
-def test_find_r_groups():
+def test_find_r_groups() -> None:
+    """Test finding the r groups in a dataframe."""
     r_groups = [f"r{i}" for i in range(8)]
-    df = pd.DataFrame([[0] * 10], columns=["name", "r6"] + r_groups[:3] + ["r7", "step"] + r_groups[3:6])
+    df = pd.DataFrame(
+        [[0] * 10],
+        columns=["name", "r6"] + r_groups[:3] + ["r7", "step"] + r_groups[3:6],
+    )
     assert find_r_groups(df) == r_groups
 
 
 @mark.parametrize("energy", ["e_energy", "gibbs_energy"])
-def test_enumeration_factory(energy):
+def test_enumeration_factory(energy: str) -> None:
+    """Test creating an Enumeration from a csv file."""
     enm = enumeration_factory("tests/data/enum_2_3.csv", energy=energy)
     assert isinstance(enm, Enumeration)
     assert enm.paths.shape == (2, 3)
     assert len(enm.path_names) == 2
 
 
-def test_enumeration_factory2():
+def test_enumeration_factory2() -> None:
+    """Test creating an Enumeration from a csv file with multiple paths."""
     enm = enumeration_factory("tests/data/enum_2_2_2.csv")
     print(enm)
     assert isinstance(enm, Enumeration)

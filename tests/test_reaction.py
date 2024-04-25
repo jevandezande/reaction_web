@@ -1,7 +1,10 @@
+"""Tests for the Reaction and EReaction classes."""
+
 from reaction_web import EReaction, Molecule, Reaction
 
 
-def test_Reaction():
+def test_Reaction() -> None:
+    """Test the Reaction class."""
     a = Molecule("a", -1)
     b = Molecule("b", -2)
     r = Reaction([a], [b])
@@ -17,7 +20,8 @@ def test_Reaction():
     assert products == [b]
 
 
-def test_EReaction():
+def test_EReaction() -> None:
+    """Test the EReaction class."""
     a = Molecule("a", -1)
     b = Molecule("b", -2)
     r = EReaction([a], [b], ne=1, ref_pot=1)

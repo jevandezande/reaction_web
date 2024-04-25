@@ -19,7 +19,7 @@ numpy = "*"
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
 pre-commit = "*"
-ruff = ">=0.3"
+ruff = ">=0.4"
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
@@ -32,11 +32,15 @@ line-length = 120
 
 [tool.ruff.lint]
 select = [
+    "D",  # pydocstyle
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
     "F",  # pyflakes
     "I",  # isort
 ]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [tool.mypy]
 files = ["reaction_web", "examples", "tests"]

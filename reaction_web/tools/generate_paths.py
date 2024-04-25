@@ -1,3 +1,5 @@
+"""Tools for generating paths from data."""
+
 from itertools import product
 from typing import Sequence
 
@@ -16,6 +18,16 @@ def enumeration_factory(
     path_indicators: Sequence[str] | str = "r-groups",
     **csv_kwargs,
 ) -> Enumeration:
+    """
+    Read a CSV and generate an Enumeration.
+
+    :param infile: file to read
+    :param energy: column to use for molecule energy
+    :param name: column to use for molecule name
+    :param path_indicators: columns that indicate paths
+    :param csv_kwargs: parameters for csv parsing
+    :return: Enumeration generated from data
+    """
     paths_dict, pi_dict = read_multipath_csv(infile, energy=energy)
 
     shape = tuple(len(vals) for vals in pi_dict.values())
@@ -31,7 +43,7 @@ def enumeration_factory(
 
 def read_csv(infile: str, energy: str = "energy", name: str = "name", **csv_kwargs) -> list[Molecule]:
     """
-    Read a csv with Molecule data
+    Read a csv with Molecule data.
 
     :param infile: file to read
     :param energy: column to use for molecule energy
@@ -55,7 +67,7 @@ def read_multipath_csv(
     **csv_kwargs,
 ) -> tuple[dict[tuple[str, ...], Path], dict[str, tuple[str, ...]]]:
     """
-    Read molecule data in a CSV and convert into paths
+    Read molecule data in a CSV and convert into paths.
 
     Note:
         Only utilizes step data to sort, no combination yet available
@@ -90,7 +102,11 @@ def read_multipath_csv(
 
 def read_paths(df: pd.DataFrame, path_indicators: Sequence[str]) -> dict[tuple[str, ...], Path]:
     """
-    Read data into separate paths, named by the group
+    Read data into separate paths, named by the group.
+
+    :param df: DataFrame with path data
+    :param path_indicators: columns that indicate paths
+    :return: Paths generated from data
     """
     return {
         names: pathify(path_data, str(names))  # keep open
@@ -100,9 +116,10 @@ def read_paths(df: pd.DataFrame, path_indicators: Sequence[str]) -> dict[tuple[s
 
 def pathify(data: pd.DataFrame, name: str = "") -> Path:
     """
-    Reads DataFrame and converts to a Path
+    Read DataFrame and converts to a Path.
 
-    Notes:
+    Notes
+    -----
         Assumes all data is sequential and part of the same path
         Does not currently utilize step data to combine molecules on the same step
     :param data: Path data
@@ -114,7 +131,5 @@ def pathify(data: pd.DataFrame, name: str = "") -> Path:
 
 
 def find_r_groups(data: pd.DataFrame) -> list[str]:
-    """
-    Find all of the r-groups in DataFrame columns with form: r#
-    """
+    """Find all of the r-groups in DataFrame columns with form: r#."""
     return natsorted(name for name in data.columns if name[0] == "r" and name[1:].isnumeric())

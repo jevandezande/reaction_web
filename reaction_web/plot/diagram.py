@@ -1,3 +1,5 @@
+"""Plotting of line diagrams."""
+
 from typing import Literal, Sequence
 
 import matplotlib.pyplot as plt
@@ -16,12 +18,13 @@ def gen_plot(
     xtickslabels: Sequence[str] | None = None,
 ) -> PLOT:
     """
-    Generates a plot
+    Generate a plot.
 
     :param steps: number of steps (reactions)
     :param xlabel: label for the x-axis
     :param ylabel: label for the y-axis
     :param xtickslabels: labels for the x-ticks
+    :return: figure and axis
     """
     fig, ax = plt.subplots()
 
@@ -49,7 +52,7 @@ def plot_path(
     latexify: bool = True,
 ) -> PLOT:
     """
-    Plot of the reaction Path
+    Plot of the reaction Path.
 
     :param path: Path to plot
     :param title: title for the plot
@@ -58,6 +61,7 @@ def plot_path(
     :param spread: how much to spread the connecting lines
     :param xtickslabels: labels for the xticks (replaces numbers)
     :param latexify: convert names to latex
+    :return: figure and axis
     """
     if not xtickslabels:
         xtickslabels = list(map(str, range(len(path) + 1)))
@@ -105,6 +109,7 @@ def plot_web(
     :param spread: how much to spread the connecting lines
     :param xtickslabels: labels for the xticks (replaces numbers)
     :param latexify: convert names to latex
+    :return: figure and axis
     """
     max_len = max(len(path) for path in web)
     if not xtickslabels:
@@ -171,6 +176,8 @@ def plot_enumeration(
     :param spread: how much to spread the connecting lines
     :param xtickslabels: labels for the xticks (replaces numbers)
     :param latexify: convert names to latex
+    :param top_level: whether this is the top level of the plot
+    :return: figure and axis
     """
     if not xtickslabels:
         xtickslabels = list(map(str, range(len(enm) + 1)))
@@ -190,7 +197,14 @@ def plot_enumeration(
     else:
         for sub_enm in enm:
             assert isinstance(sub_enm, Enumeration)
-            plot_enumeration(sub_enm, plot=(fig, ax), style=style, spread=spread, latexify=latexify, top_level=False)
+            plot_enumeration(
+                sub_enm,
+                plot=(fig, ax),
+                style=style,
+                spread=spread,
+                latexify=latexify,
+                top_level=False,
+            )
 
     if top_level:
         ax.set_xlabel("Species")

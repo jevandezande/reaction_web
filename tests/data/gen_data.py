@@ -1,3 +1,5 @@
+"""Generate enumeration data for testing purposes."""
+
 import random
 from itertools import product
 from string import ascii_lowercase, ascii_uppercase
@@ -5,7 +7,8 @@ from string import ascii_lowercase, ascii_uppercase
 from more_itertools import take
 
 
-def gen_enumeration():
+def gen_enumeration() -> str:
+    """Generate enumeration data for testing purposes."""
     r_groups = {
         "r1": (("A", 1), ("B", 2)),
         "r2": (("C", 1), ("D", 3), ("E", 7)),
@@ -29,13 +32,14 @@ D, 4, {r1}, {r2}, {r3}, {r4}, {r5}, {e4 + e5}
     return header + data.strip()
 
 
-def gen_enumeration_from_shape(r_shape: tuple[int, ...], num_steps: int = 5, seed: int | None = None):
+def gen_enumeration_from_shape(r_shape: tuple[int, ...], num_steps: int = 5, seed: int | None = None) -> str:
     """
     Programmatically generate an enumeration for testing purposes.
 
     :param r_shape: shape of the r_groups
     :param num_steps: number of steps in the Paths
     :param seed: random seed for energies
+    :return: enumeration data as a string
     """
     if seed:
         random.seed(seed)

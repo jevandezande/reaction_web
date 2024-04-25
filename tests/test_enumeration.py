@@ -1,32 +1,39 @@
+"""Tests for the Enumeration class."""
+
 from itertools import product
 
 from more_itertools import collapse, windowed
-from pytest import fixture, raises
+from pytest import FixtureRequest, fixture, raises
 
 from reaction_web import Enumeration, Path
 from reaction_web.tools.generate_paths import enumeration_factory
 
 
 @fixture(params=["e_energy", "gibbs_energy"])
-def data_enumeration(request):
+def data_enumeration(request: FixtureRequest) -> Enumeration:
+    """Make a 2 x 3 Enumeration with e_energy and gibbs_energy."""
     return enumeration_factory("tests/data/enum_2_3.csv", energy=request.param)
 
 
 @fixture
-def data_2_2_2_enumeration():
+def data_2_2_2_enumeration() -> Enumeration:
+    """Make a 2 x 2 x 2 Enumeration."""
     return enumeration_factory("tests/data/enum_2_2_2.csv")
 
 
 @fixture
-def data_2_3_2_3_4_enumeration():
+def data_2_3_2_3_4_enumeration() -> Enumeration:
+    """Make a 2 x 3 x 2 x 3 x 4 Enumeration."""
     return enumeration_factory("tests/data/enum_2_3_2_3_4.csv")
 
 
-def test_Enumeration_repr(data_enumeration):
+def test_Enumeration_repr(data_enumeration: Enumeration) -> None:
+    """Test the repr method."""
     assert repr(data_enumeration) == "<Enumeration ('r1', 'r2') (2, 3)>"
 
 
-def test_Enumeration_str(data_enumeration):
+def test_Enumeration_str(data_enumeration: Enumeration):
+    """Test the str method."""
     assert (
         str(data_enumeration)
         == """\
@@ -46,7 +53,8 @@ Enumeration {'r2': ('B', 'H', 'I')}
     )
 
 
-def test_Enumeration_str_2(data_2_2_2_enumeration):
+def test_Enumeration_str_2(data_2_2_2_enumeration: Enumeration):
+    """Test the str method for a 2 x 2 x 2 Enumeration."""
     assert (
         str(data_2_2_2_enumeration)
         == """\
@@ -80,15 +88,17 @@ Enumeration {'r2': ('C', 'H'), 'r3': ('H', 'I')}
     )
 
 
-def test_Enumeration_len(data_enumeration):
+def test_Enumeration_len(data_enumeration: Enumeration) -> None:
+    """Test the len method for a 2 x 3 Enumeration."""
     assert len(data_enumeration) == 2
 
 
-def test_Enumeration_getitem(data_enumeration):
+def test_Enumeration_getitem(data_enumeration: Enumeration) -> None:
+    """Test the getitem method for a 2 x 3 Enumeration."""
     assert isinstance(data_enumeration["H"], Enumeration)
     assert isinstance(data_enumeration["C"], Enumeration)
     for a, b in product("HC", "HBI"):
-        path = data_enumeration[a][b]
+        path = data_enumeration[a][b]  # type: ignore
         assert isinstance(path, Path)
         assert len(path) == 3
         assert path.name == str((a, b))
@@ -97,26 +107,32 @@ def test_Enumeration_getitem(data_enumeration):
         assert data_enumeration["B"]
 
 
-def test_Enumeration_iter(data_enumeration):
+def test_Enumeration_iter(data_enumeration: Enumeration) -> None:
+    """Test the iter method for a 2 x 3 Enumeration."""
     for enum_r1 in data_enumeration:
         for path in enum_r1:
-            for (reactants, products), (name_r, name_p) in zip(path, windowed("ABCD", 2)):
-                assert reactants[0].name == name_r
-                assert products[0].name == name_p
+            for (reactants, products), (name_r, name_p) in zip(  # type: ignore
+                path, windowed("ABCD", 2)
+            ):
+                assert reactants[0].name == name_r  # type: ignore
+                assert products[0].name == name_p  # type: ignore
 
 
-def test_Enumeration_iter_2(data_2_2_2_enumeration):
+def test_Enumeration_iter_2(data_2_2_2_enumeration: Enumeration) -> None:
+    """Test the iter method for a 2 x 2 x 2 Enumeration."""
     for path in collapse(data_2_2_2_enumeration, levels=2):
         for (molecule,), name in zip(path[0], "AB"):
             assert molecule.name == name
 
 
-def test_Enumeration_iter_3(data_2_3_2_3_4_enumeration):
+def test_Enumeration_iter_3(data_2_3_2_3_4_enumeration: Enumeration) -> None:
+    """Test the iter method for a 2 x 3 x 2 x 3 x 4 Enumeration."""
     for path in collapse(data_2_3_2_3_4_enumeration, levels=4):
         for reaction, names in zip(path, windowed("ABCD", 2)):
             for (molecule,), name in zip(reaction, names):
                 assert molecule.name == name
 
 
-def test_Enumeration_shape(data_enumeration):
+def test_Enumeration_shape(data_enumeration: Enumeration) -> None:
+    """Test the shape attribute."""
     assert data_enumeration.shape == (2, 3)

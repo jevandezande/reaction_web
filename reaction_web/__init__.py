@@ -1,3 +1,5 @@
+"""Reaction Web package."""
+
 # isort:skip_file
 from .molecule import Molecule
 from .reaction import Reaction, EReaction

@@ -1,3 +1,5 @@
+"""Tests for the helper module."""
+
 from pytest import approx, mark, raises
 
 from reaction_web.tools.helper import energy_conversion
@@ -11,10 +13,12 @@ from reaction_web.tools.helper import energy_conversion
         ("kcal/mol", "kJ/mol", 4.1840),
     ],
 )
-def test_energy_conversion(from_e, to_e, expected):
+def test_energy_conversion(from_e: str, to_e: str, expected: float) -> None:
+    """Test energy_conversion for different energy units."""
     assert energy_conversion(from_e, to_e) == approx(expected)
 
 
-def test_energy_conversion_raises():
+def test_energy_conversion_raises() -> None:
+    """Test that energy_conversion raises a ValueError for an invalid unit."""
     with raises(ValueError):
         energy_conversion("H", "kcal/mol")

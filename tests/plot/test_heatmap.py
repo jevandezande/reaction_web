@@ -1,3 +1,5 @@
+"""Tests for the heatmap plottings."""
+
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots
 from pytest import fixture, mark, raises
@@ -20,7 +22,8 @@ pytestmark = mark.graphical
 
 
 @fixture
-def web():
+def web() -> Web:
+    """Make a simple Web with three paths."""
     refp = 5
     a = Molecule("a", 1)
     b = Molecule("b", 0)
@@ -40,12 +43,14 @@ def web():
 
 
 @fixture
-def web_list(web):
+def web_list(web: Web) -> list[Web]:
+    """Make a list of two webs."""
     path1, path2, path3 = web
     return [web, Web([path2, path3, path1])]
 
 
-def test_heatmap_path(web):
+def test_heatmap_path(web: Web) -> None:
+    """Test the heatmap_path."""
     path1, path2, path3 = web
 
     fig, (ax1, ax2, ax3) = subplots(3)
@@ -56,7 +61,8 @@ def test_heatmap_path(web):
     plt.close()
 
 
-def test_heatmap_web(web):
+def test_heatmap_web(web: Web) -> None:
+    """Test the heatmap_web."""
     _, path2, path3 = web
     web2 = Web([path2, path3])
 
@@ -64,7 +70,9 @@ def test_heatmap_web(web):
     plt.close()
 
 
-def test_heatmap_webs_function(web_list):
+def test_heatmap_webs_function(web_list: list[Web]) -> None:
+    """Test the heatmap_webs."""
+
     def path_min(path: Path) -> float:
         return path.min()[0]
 
@@ -72,7 +80,8 @@ def test_heatmap_webs_function(web_list):
     plt.close()
 
 
-def test_heatmap_webs_max(web_list):
+def test_heatmap_webs_max(web_list: list[Web]) -> None:
+    """Test the heatmap_webs_max."""
     heatmap_webs_max(web_list, xtickslabels=[1, 2, 3], ytickslabels=["A", "B"], showvals=True)
     plt.close()
 
@@ -81,17 +90,20 @@ def test_heatmap_webs_max(web_list):
         heatmap_webs_max(web_list + [web3])
 
 
-def test_heatmap_webs_min(web_list):
+def test_heatmap_webs_min(web_list: list[Web]) -> None:
+    """Test the heatmap_webs_min."""
     heatmap_webs_min(web_list)
     plt.close()
 
 
-def test_heatmap_webs_step(web_list):
+def test_heatmap_webs_step(web_list: list[Web]) -> None:
+    """Test the heatmap_webs_step."""
     heatmap_webs_step(web_list, 1)
     plt.close()
 
 
-def test_heatmap_webs_relative_step(web_list):
+def test_heatmap_webs_relative_step(web_list: list[Web]) -> None:
+    """Test the heatmap_webs_relative_step."""
     heatmap_webs_relative_step(web_list, 1)
     plt.close()
 
@@ -108,9 +120,10 @@ def test_heatmap_webs_relative_step(web_list):
         (3, 1, 2, 4, 5),
     ],
 )
-def test_gen_subplots(shape):
+def test_gen_subplots(shape: tuple[int, ...]) -> None:
+    """Test gen_subplots."""
     fig, axes, gs = gen_subplots(shape)
-    assert axes.shape == shape
+    assert axes.shape == shape  # type: ignore
 
     plt.close()
 
@@ -127,15 +140,17 @@ def test_gen_subplots(shape):
         [(3, 1, 2, 4, 5), ("ABC", "D", "EF", "GHIJ", "KLMNO")],
     ],
 )
-def test_gen_subplots_labels(shape, labels):
-    fig, axes, gs = gen_subplots(shape, labels=labels)
-    assert axes.shape == shape
+def test_gen_subplots_labels(shape: tuple[int, ...], labels: tuple[str | tuple[str, ...], ...]):
+    """Test gen_subplots with labels."""
+    _, axes, _ = gen_subplots(shape, labels=labels)
+    assert axes.shape == shape  # type: ignore
 
     plt.close()
 
 
-def test_heatmap_enumeration_function():
+def test_heatmap_enumeration_function() -> None:
+    """Test the heatmap_enumeration."""
     enm = enumeration_factory("tests/data/enum_2_3_2_3_4.csv")
-    fig, ax = heatmap_enumeration_function(enm, lambda path: path.max()[1], showvals=True)
+    heatmap_enumeration_function(enm, lambda path: path.max()[1], showvals=True)
 
     plt.close()
