@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterator
+from typing import Iterator, Self
 
 import numpy as np
 
@@ -52,11 +52,11 @@ class Enumeration:
         """
         return len(self.paths)
 
-    def __getitem__(self, idx: str | int) -> Enumeration | Path:
+    def __getitem__(self, idx: str | int) -> Self | Path:
         """
         Get an Enumeration/Path via its path_name (str) or index (int)
         """
-        (path_name, subs), *tail = self.path_names.items()
+        (_, subs), *tail = self.path_names.items()
         if isinstance(idx, str):
             if idx not in subs:
                 raise KeyError("{idx=} is not contained in Enumeration")
@@ -64,14 +64,19 @@ class Enumeration:
 
         item = self.paths[idx]
 
-        return Enumeration(item, dict(tail)) if tail else item
+        return type(self)(item, dict(tail)) if tail else item
 
-    def __iter__(self) -> Iterator[Enumeration] | Iterator[Path]:
+    def __iter__(self) -> Iterator[Self] | Iterator[Path]:
+        """
+        Iterate over the top dimension of the Enumeration.
+
+        :yield: Path or Enumeration, depending on the dimensionality of the Enumeration
+        """
         if self.ndim == 1:
             yield from self.paths  # Iterator[Path]
         else:
-            head, *tail = self.path_names.items()
-            yield from (Enumeration(item, dict(tail)) for item in self.paths)  # Iterator[Enumeration]
+            _, *tail = self.path_names.items()
+            yield from (type(self)(item, dict(tail)) for item in self.paths)  # Iterator[Self]
 
     @property
     def shape(self) -> tuple[int, ...]:
